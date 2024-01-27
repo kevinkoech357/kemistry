@@ -9,13 +9,20 @@ from flask_session import Session
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_wtf import CSRFProtect
+from flask_security.core import Security
+from flask_security.utils import hash_password
+from flask_security.datastore import SQLAlchemyUserDatastore
 
 # App modules
 from kemistry.config import App_Config
-from kemistry.models.basemodel import Base
+from kemistry.models.database import Base
+#from kemistry.models.database import db_session, init_db
+
+from kemistry.models.user import User, Role
+
 
 # Initializing extension objects
-db = SQLAlchemy(model_class=Base)
+db = SQLAlchemy()
 login_manager = LoginManager()
 bootstrap = Bootstrap5()
 migrate = Migrate()
@@ -36,17 +43,25 @@ def create_app():
     # Allow URLs with or without trailing slashes
     app.url_map.strict_slashes = False
 
+    # manage sessions per request - make sure connections are closed and returned
+    #app.teardown_appcontext(lambda exc: db_session.close())
+
     # Setting CORS
     CORS(app, supports_credentials=True)
+
+    CSRFProtect(app)
 
     # Lazy loading the extensions
     db.init_app(app)
     login_manager.init_app(app)
     bootstrap.init_app(app)
     migrate.init_app(app, db)
-    sess.init_app(app)
-    bcrypt.init_app(app)
-    moment.init_app(app)
+
+    # Setup Flask-Security
+    user_datastore = SQLAlchemyUserDatastore(User, Role, role_model=Base)
+    security = Security(app, user_datastore)
+
+    security.init_app(app)
 
     # Import blueprints
     from kemistry.auth.routes import auth
@@ -56,13 +71,12 @@ def create_app():
     app.register_blueprint(auth)
     app.register_blueprint(user)
 
-    # Import User
-    from kemistry.models.user import User
-
+    # one time setup
     with app.app_context():
-        # Create database tables
+        # Create User to test with
         db.create_all()
-        print("Database created successfully")
+        print("Created db successfully")
+
 
     @login_manager.user_loader
     def load_user(user_id):

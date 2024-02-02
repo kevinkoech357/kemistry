@@ -1,40 +1,40 @@
 # Flask extensions
-from flask import Flask, render_template, redirect, url_for, flash
-from flask_login import LoginManager
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap5
 from flask_migrate import Migrate
 from flask_moment import Moment
 from flask_session import Session
-from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_wtf import CSRFProtect
+from flask_bcrypt import Bcrypt
 from flask_security.core import Security
-from flask_security.utils import hash_password
+from flask_security import hash_password
 from flask_security.datastore import SQLAlchemyUserDatastore
+from flask_mailman import Mail
 
 # App modules
 from kemistry.config import App_Config
-from kemistry.models.database import Base
-#from kemistry.models.database import db_session, init_db
-
-from kemistry.models.user import User, Role
 
 
 # Initializing extension objects
 db = SQLAlchemy()
-login_manager = LoginManager()
 bootstrap = Bootstrap5()
 migrate = Migrate()
 sess = Session()
-bcrypt = Bcrypt()
 moment = Moment()
+bcrypt = Bcrypt()
+mail = Mail()
 
 
 def create_app():
     """
     Create and return an app instance of Flask.
     """
+    # Import user and role models
+    from kemistry.models.user import User
+    from kemistry.models.role import Role
+
     app = Flask(__name__)
 
     # Loading local config into app
@@ -43,9 +43,6 @@ def create_app():
     # Allow URLs with or without trailing slashes
     app.url_map.strict_slashes = False
 
-    # manage sessions per request - make sure connections are closed and returned
-    #app.teardown_appcontext(lambda exc: db_session.close())
-
     # Setting CORS
     CORS(app, supports_credentials=True)
 
@@ -53,15 +50,14 @@ def create_app():
 
     # Lazy loading the extensions
     db.init_app(app)
-    login_manager.init_app(app)
     bootstrap.init_app(app)
+    bcrypt.init_app(app)
+    mail.init_app(app)
     migrate.init_app(app, db)
 
     # Setup Flask-Security
-    user_datastore = SQLAlchemyUserDatastore(User, Role, role_model=Base)
-    security = Security(app, user_datastore)
-
-    security.init_app(app)
+    user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+    app.security = Security(app, user_datastore)
 
     # Import blueprints
     from kemistry.auth.routes import auth
@@ -73,19 +69,18 @@ def create_app():
 
     # one time setup
     with app.app_context():
-        # Create User to test with
         db.create_all()
         print("Created db successfully")
-
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(user_id)
-
-    @login_manager.unauthorized_handler
-    def unauthorized():
-        flash("Please log in to access this page.", "warning")
-        return redirect(url_for("auth.login"))
+        # Create a user and role to test with
+        app.security.datastore.find_or_create_role(
+            name="user", permissions={"user-read", "user-write"}
+        )
+        db.session.commit()
+        if not app.security.datastore.find_user(email="test@me.com"):
+            app.security.datastore.create_user(
+                email="test@me.com", password=hash_password("password"), roles=["user"]
+            )
+            db.session.commit()
 
     # Error handlers
     @app.errorhandler(404)

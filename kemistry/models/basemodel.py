@@ -1,32 +1,28 @@
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from kemistry import db
 from datetime import datetime, timezone
-import sqlalchemy.orm as so
 from nanoid import generate
 
 
-class Base(DeclarativeBase):
+class BaseModel(db.Model):
     """
-    Create a Base to be inherited by other python classess.
+    Create a Base to be inherited by other class models.
     """
 
     __abstract__ = True
 
-    id: Mapped[str] = mapped_column(
-        primary_key=True,
-        default=lambda: generate("1234567890abcdef", 10),
-        nullable=False,
+    id = db.Column(db.String(10), primary_key=True, default=generate, index=True)
+    created_at = db.Column(
+        db.DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
-    created_at: so.Mapped[datetime] = so.mapped_column(
-        index=True, default=lambda: datetime.now(timezone.utc), nullable=False
-    )
-    updated_at: so.Mapped[datetime] = so.mapped_column(
-        index=True,
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
-        nullable=False,
+    updated_at = db.Column(
+        db.DateTime(timezone=True),
+        default=datetime.now(timezone.utc),
+        onupdate=datetime.now(timezone.utc),
     )
 
-    def __init__(self):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
         self.id = generate("1234567890", 10)
-        created_at = datetime.now(timezone.utc)
-        updated_at = datetime.now(timezone.utc)
+        self.created_at = datetime.now(timezone.utc)
+        self.updated_at = datetime.now(timezone.utc)

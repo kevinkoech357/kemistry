@@ -1,33 +1,44 @@
-from kemistry.models.basemodel import Base
+from kemistry.models.basemodel import BaseModel
+from flask_security.core import UserMixin
 from kemistry import db
-from typing import Optional
-import sqlalchemy as sa
-import sqlalchemy.orm as so
-from flask_login import UserMixin
 
 
-class User(Base, db.Model, UserMixin):
+class User(BaseModel, UserMixin):
     """
-    Define modelling schema for User table.
+    User model representing application users.
     """
 
-    __tablename__ = "users"
+    __tablename__ = "user"
 
-    username: so.Mapped[str] = so.mapped_column(
-        sa.String(21), index=True, unique=True, nullable=False
+    email = db.Column(db.String(255), unique=True)
+    username = db.Column(db.String(255), unique=True, nullable=True)
+    password = db.Column(db.String(255), nullable=False)
+    active = db.Column(db.Boolean())  # Change to Boolean for active status
+    fs_uniquifier = db.Column(db.String(64), unique=True, nullable=False)
+    last_login_at = db.Column(db.DateTime())
+    current_login_at = db.Column(db.DateTime())
+    last_login_ip = db.Column(db.String(100))
+    current_login_ip = db.Column(db.String(100))
+    login_count = db.Column(db.Integer)
+    roles = db.relationship(
+        "Role", secondary="roles_users", backref=db.backref("users", lazy="dynamic")
     )
-    first_name: so.Mapped[str] = so.mapped_column(sa.String(12), nullable=False)
-    last_name: so.Mapped[str] = so.mapped_column(sa.String(12), nullable=False)
-    email: so.Mapped[str] = so.mapped_column(
-        sa.String(42), index=True, unique=True, nullable=False
-    )
-    password: so.Mapped[Optional[str]] = so.mapped_column(sa.String(42), nullable=False)
 
-    def __init__(self, username, email, password):
-        super().__init__()
-        username = self.username
-        email = self.email
-        password = self.password
+    def __init__(self, **kwargs):
+        """
+        Constructor for User class.
 
-    def __repr__(self):
-        return "<User {}>".format(self.username)
+        Parameters:
+        - kwargs: Keyword arguments representing user attributes
+        """
+        super().__init__(**kwargs)
+        self.email = kwargs.get("email", "")
+        self.username = kwargs.get("username", "")
+        self.password = kwargs.get("password", "")
+        self.active = kwargs.get("active", False)
+        self.fs_uniquifier = kwargs.get("fs_uniquifier", "")
+        self.last_login_at = kwargs.get("last_login_at", None)
+        self.last_login_ip = kwargs.get("last_login_ip", "")
+        self.current_login_at = kwargs.get("current_login_at", None)
+        self.current_login_ip = kwargs.get("current_login_ip", "")
+        self.login_count = kwargs.get("login_count", 0)

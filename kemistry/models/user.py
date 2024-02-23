@@ -11,15 +11,18 @@ class User(BaseModel, UserMixin):
     __tablename__ = "user"
 
     email = db.Column(db.String(255), unique=True)
-    username = db.Column(db.String(255), unique=True, nullable=True)
-    password = db.Column(db.String(255), nullable=False)
-    active = db.Column(db.Boolean())  # Change to Boolean for active status
+    password = db.Column(db.String(255))
+    first_name = db.Column(db.String(255))
+    last_name = db.Column(db.String(255))
+    username = db.Column(db.String(255), unique=True, nullable=False)
+    active = db.Column(db.Boolean())
     fs_uniquifier = db.Column(db.String(64), unique=True, nullable=False)
     last_login_at = db.Column(db.DateTime())
     current_login_at = db.Column(db.DateTime())
     last_login_ip = db.Column(db.String(100))
     current_login_ip = db.Column(db.String(100))
     login_count = db.Column(db.Integer)
+    confirmed_at = db.Column(db.DateTime())
     roles = db.relationship(
         "Role", secondary="roles_users", backref=db.backref("users", lazy="dynamic")
     )
@@ -32,6 +35,10 @@ class User(BaseModel, UserMixin):
         - kwargs: Keyword arguments representing user attributes
         """
         super().__init__(**kwargs)
+        self.first_name = kwargs.get("first_name", "")
+        self.last_name = kwargs.get("last_name", "")
+        self.qualification = kwargs.get("qualification", "")
+        self.university = kwargs.get("university", "")
         self.email = kwargs.get("email", "")
         self.username = kwargs.get("username", "")
         self.password = kwargs.get("password", "")
@@ -42,3 +49,4 @@ class User(BaseModel, UserMixin):
         self.current_login_at = kwargs.get("current_login_at", None)
         self.current_login_ip = kwargs.get("current_login_ip", "")
         self.login_count = kwargs.get("login_count", 0)
+        self.confirmed_at = kwargs.get("confirmed_at", None)

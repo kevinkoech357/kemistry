@@ -1,0 +1,70 @@
+{% extends "layout/base.html" %}
+{% from "security/_macros.html" import render_field_with_errors, render_form_errors, prop_next %}
+
+{% block content %}
+  {% include "security/_messages.html" %}
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="text-center mb-3">
+          <h1>{{ _fsdomain('Login') }}</h1>
+        </div>
+        <form action="{{ url_for_security('login') }}{{ prop_next() }}" method="post" name="login_user_form">
+          {{ login_user_form.hidden_tag() }}
+          <div class="mb-3 text-danger">
+            {{ render_form_errors(login_user_form) }}
+          </div>
+          {% if "email" in identity_attributes %}
+            <div class="mb-3">
+              {{ render_field_with_errors(login_user_form.email, class="form-control form-control-sm", placeholder="Email") }}
+            </div>
+          {% endif %}
+          <div class="mb-3">
+            {{ render_field_with_errors(login_user_form.password, class="form-control form-control-sm", placeholder="Password") }}
+          </div>
+          <div class="mb-3">
+            {{ render_field_with_errors(login_user_form.remember, class="form-check-input") }}
+          </div>
+          <div class="mb-3">
+            {{ login_user_form.csrf_token }}
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary">{{ _fsdomain('Login') }}</button>
+          </div>
+        </form>
+        <p class="text-center mt-3"><a href="{{ url_for_security('forgot_password') }}">Forgot Password?</a></p>
+      </div>
+    </div>
+
+    {% if security.webauthn %}
+      <hr class="my-4">
+      <h2 class="text-center">{{ _fsdomain("Use WebAuthn to Sign In") }}</h2>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <form method="get" id="wan_signin_form" name="wan_signin_form">
+            <button type="submit" class="btn btn-secondary">{{ _fsdomain('Sign in with WebAuthn') }}</button>
+          </form>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if security.oauthglue %}
+      <hr class="my-4">
+      <h2 class="text-center">{{ _fsdomain("Use Social Oauth to Sign In") }}</h2>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          {% for provider in security.oauthglue.provider_names %}
+            <div class="mb-3">
+              <form method="post" id="{{ provider }}_form" name="{{ provider }}_form">
+                <button type="submit" class="btn btn-outline-secondary">{{ _fsdomain('Sign in with ') }}{{ provider }}</button>
+                {% if csrf_token is defined %}
+                  <input type="hidden" name="{{ provider }}_csrf_token" value="{{ csrf_token() }}">
+                {% endif %}
+              </form>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

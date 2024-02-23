@@ -35,10 +35,14 @@ def create_app():
     from kemistry.models.user import User
     from kemistry.models.role import Role
 
+    # Import extended register form
+    from kemistry.forms.forms import ExtendedRegisterForm
+
     app = Flask(__name__)
 
     # Loading local config into app
     app.config.from_object(App_Config)
+    app.config["SECURITY_CONFIRM_REGISTER_FORM"] = ExtendedRegisterForm
 
     # Allow URLs with or without trailing slashes
     app.url_map.strict_slashes = False
@@ -57,14 +61,12 @@ def create_app():
 
     # Setup Flask-Security
     user_datastore = SQLAlchemyUserDatastore(db, User, Role)
-    app.security = Security(app, user_datastore)
+    app.security = Security(app, user_datastore, register_form=ExtendedRegisterForm)
 
     # Import blueprints
-    from kemistry.auth.routes import auth
     from kemistry.user.routes import user
 
     # Register blueprints
-    app.register_blueprint(auth)
     app.register_blueprint(user)
 
     # one time setup

@@ -22,9 +22,9 @@ class App_Config:
         "pool_pre_ping": True,
     }
 
-    # Bootstrap configurations
-    BOOTSWATCH_THEME = "flatly"
-    BOOTSWATCH_SERVE_LOCAL = True
+    # Bootstrap config
+    BOOTSTRAP_BOOTSWATCH_THEME = "superhero"
+    BOOTSTRAP_SERVE_LOCAL = True
 
     # Flask-Security configurations
     SECURITY_PASSWORD_SALT = os.environ.get(

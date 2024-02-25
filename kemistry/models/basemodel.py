@@ -3,6 +3,9 @@ from datetime import datetime, timezone
 from nanoid import generate
 
 
+ALPHANUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-"
+
+
 class BaseModel(db.Model):
     """
     Create a Base to be inherited by other class models.
@@ -23,6 +26,6 @@ class BaseModel(db.Model):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.id = generate("1234567890", 10)
+        self.id = generate(ALPHANUM, 10)
         self.created_at = datetime.now(timezone.utc)
         self.updated_at = datetime.now(timezone.utc)

@@ -5,35 +5,13 @@ from flask_security import AsaList
 from sqlalchemy.ext.mutable import MutableList
 
 
-class RolesUsers(BaseModel):
-    """
-    Association table between users and roles.
-    """
-
-    __tablename__ = "roles_users"
-
-    user_id = db.Column("user_id", db.String(), db.ForeignKey("user.id"))
-    role_id = db.Column("role_id", db.String(), db.ForeignKey("role.id"))
-
-    def __init__(self, user_id, role_id):
-        """
-        Constructor for RolesUsers class.
-
-        Parameters:
-        - user_id: User ID
-        - role_id: Role ID
-        """
-        super().__init__()
-        self.user_id = user_id
-        self.role_id = role_id
-
-
 class Role(BaseModel, RoleMixin):
     """
     Role model representing user roles in the application.
     """
 
     __tablename__ = "role"
+
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
     permissions = db.Column(MutableList.as_mutable(AsaList()), nullable=True)
@@ -51,3 +29,29 @@ class Role(BaseModel, RoleMixin):
         self.name = name
         self.description = None
         self.permissions = None
+
+
+class RolesUsers(db.Model):
+    """
+    Association table between users and roles.
+    """
+
+    __tablename__ = "roles_users"
+
+    user_id = db.Column(
+        "user_id", db.String(), db.ForeignKey("user.id"), primary_key=True
+    )
+    role_id = db.Column(
+        "role_id", db.String(), db.ForeignKey("role.id"), primary_key=True
+    )
+
+    def __init__(self, user_id, role_id):
+        """
+        Constructor for RolesUsers class.
+
+        Parameters:
+        - user_id: User ID
+        - role_id: Role ID
+        """
+        self.user_id = user_id
+        self.role_id = role_id

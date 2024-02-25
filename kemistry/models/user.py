@@ -1,6 +1,7 @@
 from kemistry.models.basemodel import BaseModel
 from flask_security.core import UserMixin
 from kemistry import db
+from kemistry.models.post import Post
 
 
 class User(BaseModel, UserMixin):
@@ -16,16 +17,19 @@ class User(BaseModel, UserMixin):
     last_name = db.Column(db.String(255))
     username = db.Column(db.String(255), unique=True, nullable=False)
     active = db.Column(db.Boolean())
-    fs_uniquifier = db.Column(db.String(64), unique=True, nullable=False)
-    last_login_at = db.Column(db.DateTime())
-    current_login_at = db.Column(db.DateTime())
+    fs_uniquifier = db.Column(db.String(100), unique=True, nullable=False)
+    last_login_at = db.Column(db.DateTime(timezone=True))
+    current_login_at = db.Column(db.DateTime(timezone=True))
     last_login_ip = db.Column(db.String(100))
     current_login_ip = db.Column(db.String(100))
     login_count = db.Column(db.Integer)
-    confirmed_at = db.Column(db.DateTime())
+    confirmed_at = db.Column(db.DateTime(timezone=True))
     roles = db.relationship(
         "Role", secondary="roles_users", backref=db.backref("users", lazy="dynamic")
     )
+
+    # Relationships
+    posts = db.relationship("Post", back_populates="author")
 
     def __init__(self, **kwargs):
         """

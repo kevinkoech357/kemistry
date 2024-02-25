@@ -78,11 +78,6 @@ def create_app():
             name="user", permissions={"user-read", "user-write"}
         )
         db.session.commit()
-        if not app.security.datastore.find_user(email="test@me.com"):
-            app.security.datastore.create_user(
-                email="test@me.com", password=hash_password("password"), roles=["user"]
-            )
-            db.session.commit()
 
     # Error handlers
     @app.errorhandler(404)

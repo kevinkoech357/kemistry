@@ -1,4 +1,6 @@
 .env
 env/
 __pycache__/
-instance/
+instance
+contact.json
+.flaskenv

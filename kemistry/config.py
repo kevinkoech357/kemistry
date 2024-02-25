@@ -43,11 +43,15 @@ class App_Config:
     SECURITY_REGISTERABLE = True
 
     # Views for redirects
-    SECURITY_POST_CONFIRM_VIEW = "/confirmed"
-    SECURITY_CONFIRM_ERROR_VIEW = "/confirm-error"
-    SECURITY_RESET_VIEW = "/reset-password"
-    SECURITY_RESET_ERROR_VIEW = "/reset-password-error"
-    SECURITY_REDIRECT_BEHAVIOR = "spa"
+    SECURITY_POST_LOGIN_VIEW = "/home"
+    SECURITY_DEFAULT_REMEMBER_ME = True
+    SECURITY_POST_CONFIRM_VIEW = "/login"
+    SECURITY_CONFIRM_ERROR_VIEW = "/confirm"
+    SECURITY_CONFIRM_EMAIL_WITHIN = "1 days"
+    SECURITY_AUTO_LOGIN_AFTER_CONFIRM = True
+    SECURITY_RESET_VIEW = "/reset"
+    SECURITY_RESET_ERROR_VIEW = "/reset"
+    SECURITY_EMAIL_SUBJECT_REGISTER = "Welcome to Kemistry."
 
     # CSRF protection settings
     SECURITY_CSRF_PROTECT_MECHANISMS = ["session", "basic"]

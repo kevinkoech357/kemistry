@@ -1,5 +1,6 @@
-from kemistry import db
+from kemistry import db, admin
 from kemistry.models.basemodel import BaseModel
+from kemistry.super_admin.view_models import PostView
 
 
 class Post(BaseModel):
@@ -15,7 +16,7 @@ class Post(BaseModel):
 
     __tablename__ = "post"
 
-    user_id = db.Column(db.String(), db.ForeignKey("user.id"))
+    user_id = db.Column(db.String(10), db.ForeignKey("user.id"), nullable=False)
     title = db.Column(db.String(100), nullable=False, index=True)
     content = db.Column(db.Text, nullable=False)
     author = db.relationship("User", back_populates="posts")
@@ -65,3 +66,6 @@ class Post(BaseModel):
         Returns a human-readable string representation of the Post object.
         """
         return f"Title: {self.title}\nExcerpt: {self.generate_excerpt()}"
+
+
+admin.add_view(PostView(Post, db.session))

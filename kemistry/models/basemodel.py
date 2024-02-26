@@ -21,11 +21,11 @@ class BaseModel(db.Model):
         nullable=False,
     )
     created_at = db.Column(
-        db.DateTime(timezone=True), server_default=func.now(), nullable=False
+        db.DateTime(timezone=True), default=func.now(), nullable=False
     )
     updated_at = db.Column(
         db.DateTime(timezone=True),
-        server_default=func.now(),
+        default=func.now(),
         onupdate=func.now(),
         nullable=False,
     )

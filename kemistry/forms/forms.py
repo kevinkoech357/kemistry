@@ -1,9 +1,18 @@
 from flask_security.forms import RegisterForm
-from wtforms import StringField, SelectField
-from wtforms.validators import DataRequired, Regexp
+from wtforms.validators import DataRequired, Regexp, Email
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField, SubmitField, SelectField
 
 
 class ExtendedRegisterForm(RegisterForm):
+    """
+    Extended registration form for users.
+
+    Inherits from Flask-Security's RegisterForm.
+    Adds additional fields for first name, last name,
+    university, and qualification.
+    """
+
     first_name = StringField(
         "First Name",
         validators=[
@@ -24,16 +33,26 @@ class ExtendedRegisterForm(RegisterForm):
     qualification = SelectField(
         "Qualification",
         choices=[
-            ("diploma", "Diploma"),
-            ("undergraduate", "Undergraduate"),
-            ("postgraduate_diploma", "Postgraduate Diploma"),
-            ("masters_degree", "Masters Degree"),
-            ("phd", "PhD"),
+            ("Diploma", "Diploma"),
+            ("Undergraduate", "Associates Degree"),
+            ("Bachelors Degree", "Bachelors Degree"),
+            ("Postgraduate Diploma", "Postgraduate Diploma"),
+            ("Masters Degree", "Masters Degree"),
+            ("PhD", "PhD"),
         ],
         validators=[DataRequired(message="Qualification is required")],
     )
 
     def validate_on_submit(self):
+        """
+        Validate form data.
+
+        Overrides FlaskForm's validate_on_submit method to customize behavior.
+        Capitalizes the first letter of first_name, last_name, and university.
+
+        Returns:
+            bool: True if form data is valid, False otherwise.
+        """
         if not super().validate_on_submit():
             return False
 
@@ -43,3 +62,24 @@ class ExtendedRegisterForm(RegisterForm):
         self.university.data = self.university.data.title()
 
         return True
+
+
+class ContactForm(FlaskForm):
+    """
+    Form for contacting the site administrator.
+
+    Inherits from Flask-WTF's FlaskForm.
+    Includes fields for name, email, and message.
+    """
+
+    name = StringField(
+        "Your Name", validators=[DataRequired(message="Name is required.")]
+    )
+    email = StringField(
+        "Email Address",
+        validators=[DataRequired(message="Valid email is required."), Email()],
+    )
+    message = TextAreaField(
+        "Message", validators=[DataRequired(message="Message is required.")]
+    )
+    submit = SubmitField("Submit")

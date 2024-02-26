@@ -1,7 +1,7 @@
 from kemistry import db
-from datetime import datetime, timezone
-from nanoid import generate
-
+from sqlalchemy import func
+from datetime import timezone
+from nanoid import generate as generate_nanoid
 
 ALPHANUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-"
 
@@ -13,19 +13,22 @@ class BaseModel(db.Model):
 
     __abstract__ = True
 
-    id = db.Column(db.String(10), primary_key=True, default=generate, index=True)
+    id = db.Column(
+        db.String(10),
+        primary_key=True,
+        index=True,
+        default=generate_nanoid(ALPHANUM, 10),
+        nullable=False,
+    )
     created_at = db.Column(
-        db.DateTime(timezone=True), default=datetime.now(timezone.utc)
+        db.DateTime(timezone=True), default=func.now(), nullable=False
     )
     updated_at = db.Column(
         db.DateTime(timezone=True),
-        default=datetime.now(timezone.utc),
-        onupdate=datetime.now(timezone.utc),
+        default=func.now(),
+        onupdate=func.now(),
+        nullable=False,
     )
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-        self.id = generate(ALPHANUM, 10)
-        self.created_at = datetime.now(timezone.utc)
-        self.updated_at = datetime.now(timezone.utc)

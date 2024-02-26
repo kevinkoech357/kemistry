@@ -16,19 +16,24 @@ class Role(BaseModel, RoleMixin):
     description = db.Column(db.String(255))
     permissions = db.Column(MutableList.as_mutable(AsaList()), nullable=True)
 
-    def __init__(self, name, description=None, permissions=None):
+    def __init__(
+        self,
+        name="user",
+        description="Read, write, and delete their own posts",
+        permissions=["user-read", "user-write", "delete-own-post"],
+    ):
         """
         Constructor for Role class.
 
         Parameters:
-        - name: Name of the role
-        - description: Description of the role
-        - permissions: List of permissions associated with the role
+        - name: Name of the role (default is "user")
+        - description: Description of the role (default is "Read, write, and delete their own posts")
+        - permissions: List of permissions associated with the role (default is ["user-read", "user-write", "delete-own-post"])
         """
         super().__init__()
         self.name = name
-        self.description = None
-        self.permissions = None
+        self.description = description
+        self.permissions = permissions
 
 
 class RolesUsers(db.Model):

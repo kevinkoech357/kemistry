@@ -1,7 +1,8 @@
-from kemistry.models.basemodel import BaseModel
 from flask_security.core import UserMixin
-from kemistry import db
+from kemistry.models.basemodel import BaseModel
+from kemistry import db, admin
 from kemistry.models.post import Post
+from kemistry.super_admin.view_models import UserView
 
 
 class User(BaseModel, UserMixin):
@@ -15,6 +16,8 @@ class User(BaseModel, UserMixin):
     password = db.Column(db.String(255))
     first_name = db.Column(db.String(255))
     last_name = db.Column(db.String(255))
+    qualification = db.Column(db.String(255))
+    university = db.Column(db.String(255))
     username = db.Column(db.String(255), unique=True, nullable=False)
     active = db.Column(db.Boolean())
     fs_uniquifier = db.Column(db.String(100), unique=True, nullable=False)
@@ -54,3 +57,6 @@ class User(BaseModel, UserMixin):
         self.current_login_ip = kwargs.get("current_login_ip", "")
         self.login_count = kwargs.get("login_count", 0)
         self.confirmed_at = kwargs.get("confirmed_at", None)
+
+
+admin.add_view(UserView(User, db.session))

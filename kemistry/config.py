@@ -26,10 +26,14 @@ class App_Config:
     BOOTSTRAP_BOOTSWATCH_THEME = "superhero"
     BOOTSTRAP_SERVE_LOCAL = True
 
-    # Flask-Security configurations
+    # Flask Admin
+    FLASK_ADMIN_SWATCH = "superhero"
+
+    # Flask-Security password configurations
     SECURITY_PASSWORD_SALT = os.environ.get(
         "SECURITY_PASSWORD_SALT", "146585145368132386173505678016728509634"
     )
+    SECURITY_PASSWORD_HASH = "argon2"
 
     # Session and remember cookie settings
     REMEMBER_COOKIE_SAMESITE = "strict"
@@ -46,9 +50,9 @@ class App_Config:
     SECURITY_POST_LOGIN_VIEW = "/home"
     SECURITY_DEFAULT_REMEMBER_ME = True
     SECURITY_POST_CONFIRM_VIEW = "/login"
-    SECURITY_CONFIRM_ERROR_VIEW = "/confirm"
+    SECURITY_CONFIRM_ERROR_VIEW = "/login"
     SECURITY_CONFIRM_EMAIL_WITHIN = "1 days"
-    SECURITY_AUTO_LOGIN_AFTER_CONFIRM = True
+    SECURITY_AUTO_LOGIN_AFTER_CONFIRM = False
     SECURITY_RESET_VIEW = "/reset"
     SECURITY_RESET_ERROR_VIEW = "/reset"
     SECURITY_EMAIL_SUBJECT_REGISTER = "Welcome to Kemistry."

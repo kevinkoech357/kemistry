@@ -17,6 +17,7 @@ from flask_admin import helpers as admin_helpers
 
 # App modules
 from kemistry.config import App_Config
+from kemistry.email import MyMailUtil
 
 # Initializing extension objects
 db = SQLAlchemy()
@@ -75,7 +76,12 @@ def create_app():
 
     # Setup Flask-Security
     user_datastore = SQLAlchemyUserDatastore(db, User, Role)
-    app.security = Security(app, user_datastore, register_form=ExtendedRegisterForm)
+    app.security = Security(
+        app,
+        user_datastore,
+        register_form=ExtendedRegisterForm,
+        mail_util_cls=MyMailUtil,
+    )
 
     # Import blueprints
     from kemistry.user.routes import user
@@ -102,11 +108,13 @@ def create_app():
         # Create admin user
         admin_email = os.environ.get("ADMIN_EMAIL")
         admin_password = os.environ.get("ADMIN_PASSWORD")
+        admin_username = os.environ.get("ADMIN_USERNAME")
 
         if admin_email and admin_password:
             if not app.security.datastore.find_user(email=admin_email):
                 app.security.datastore.create_user(
                     email=admin_email,
+                    username=admin_username,
                     password=hash_password(admin_password),
                     roles=["admin"],
                 )
@@ -114,7 +122,10 @@ def create_app():
             else:
                 print(f"Admin user with email {admin_email} already exists.")
         else:
-            print("ADMIN_EMAIL and ADMIN_PASSWORD environment variables must be set.")
+            print(
+                "ADMIN_EMAIL, ADMIN_PASSWORD and ADMIN_USERNAME \
+                environment variables must be set."
+            )
 
     app.context_processor(security_context_processor)
 

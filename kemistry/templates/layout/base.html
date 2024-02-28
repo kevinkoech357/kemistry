@@ -1,225 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Preconnect to Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <!-- Load the Roboto font -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
-    rel="stylesheet"
-  />
-  <!-- Bootstrap CSS -->
-  {{ bootstrap.load_css() }}
-  <!-- Normalize css -->
-  <link rel="stylesheet" href="static/css/normalize.css" />
-  <!-- Devicons -->
-  <link
-    rel="stylesheet"
-    type="text/css"
-    href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
-  />
-  <title>Kemistry</title>
-  <style>
-    /* Apply the Roboto font to the navbar */
-    .navbar {
-      font-family: "Roboto", sans-serif;
-    }
-    /* Add some padding to the navbar items */
-    .nav-item {
-      padding: 0.5rem 1rem;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Load the Roboto font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap CSS -->
+    {{ bootstrap.load_css() }}
+    <!-- Normalize css -->
+    <link rel="stylesheet" href="static/css/normalize.css" />
+    <!-- Devicons -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+    />
+    <title>Kemistry</title>
+    <style>
+      /* Apply the Roboto font to the navbar */
+      .navbar {
+        font-family: "Roboto", sans-serif;
+      }
+      /* Add some padding to the navbar items */
+      .nav-item {
+        padding: 0.5rem 1rem;
+      }
 
-    .list-unstyled {
-      text-decoration: none;
-    }
+      .list-unstyled {
+        text-decoration: none;
+      }
 
-    /* Styling for social links */
-    .social-link {
-      color: white;
-      text-decoration: none;
-      transition: text-decoration 0.3s;
-    }
+      /* Styling for social links */
+      .social-link {
+        color: white;
+        text-decoration: none;
+        transition: text-decoration 0.3s;
+      }
 
-    .social-link:hover {
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/">Kemistry</a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarColor02"
-      aria-controls="navbarColor02"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarColor02">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Playground
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/guess">Guessing game</a></li>
-            <li><a class="dropdown-item" href="/qa">Question & Answer</a></li>
+      .social-link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">Kemistry</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarColor02"
+          aria-controls="navbarColor02"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarColor02">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Playground
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" href="/guess">Guessing game</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="/qa">Question & Answer</a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/contact">Contact</a>
+            </li>
           </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/contact">Contact</a>
-        </li>
-      </ul>
-      <form class="d-flex ms-auto" role="search">
-        <input
-          class="form-control me-2"
-          type="search"
-          placeholder="Search"
-          aria-label="Search"
-        />
-        <button class="btn btn-outline-light" type="submit">Search</button>
-      </form>
-      <ul class="navbar-nav ms-auto mb-2">
-        {% if current_user.is_authenticated %}
-        <!-- If user is authenticated, show logout -->
-        <li class="nav-item">
-          <a class="nav-link btn btn-dark" href="/write">Write</a>
-        </li>
+          <form class="d-flex ms-auto" role="search">
+            <input
+              class="form-control me-2"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+            />
+            <button class="btn btn-outline-light" type="submit">Search</button>
+          </form>
+          <ul class="navbar-nav ms-auto mb-2">
+            {% if current_user.is_authenticated %}
+            <!-- If user is authenticated, show logout -->
+            <li class="nav-item">
+              <a class="nav-link btn btn-dark" href="/write">Write</a>
+            </li>
 
-        <li class="nav-item">
-          <a class="nav-link btn btn-dark" href="/account">Dashboard</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link btn btn-danger" href="/logout">Logout</a>
-        </li>
-        {% else %}
-        <!-- If user is not authenticated, show login and sign up -->
-        <li class="nav-item">
-          <a class="nav-link btn btn-success" href="/login">Login</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link btn btn-info" href="register">Sign Up</a>
-        </li>
-        {% endif %}
-      </ul>
-    </div>
-  </div>
-</nav>
-<!-- Start: Rendering flashed messages -->
-
-{% from 'bootstrap5/utils.html' import render_messages %} {{ render_messages(dismissible=true, dismiss_animate=true) }}
-
-<!-- End: Rendering flashed messages -->
-
-<!-- Content block for individual pages -->
-<div class="container-fluid">{% block content %}{% endblock %}</div>
-
-<!-- Start: Footer Multi Column -->
-<footer class="bg-dark">
-  <div class="container py-4 py-lg-5">
-    <div class="row justify-content-center">
-      <!-- Start: Section -->
-      <div
-        class="col-sm-4 col-md-3 text-center text-lg-start d-flex flex-column"
-      >
-        <h3 class="fs-6 fw-bold">Section</h3>
-        <ul class="list-unstyled">
-          <li><a href="#" target="_blank" class="text-light text-decoration-none">Home</a></li>
-          <li><a href="#" target="_blank" class="text-light text-decoration-none">Playground</a></li>
-          <li><a href="#" target="_blank" class="text-light text-decoration-none">Contact</a></li>
-        </ul>
+            <li class="nav-item">
+              <a class="nav-link btn btn-dark" href="/dashboard">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-danger" href="/logout">Logout</a>
+            </li>
+            {% else %}
+            <!-- If user is not authenticated, show login and sign up -->
+            <li class="nav-item">
+              <a class="nav-link btn btn-success" href="/login">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-info" href="register">Sign Up</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
       </div>
-      <!-- End: Section -->
-      <!-- Start: Source Code -->
-      <div
-        class="col-sm-4 col-md-3 text-center text-lg-start d-flex flex-column"
-      >
-        <h3 class="fs-6 fw-bold">Code</h3>
-        <ul class="list-unstyled">
-          <li>
-            <a
-              href="https://github.com/kevinkoech357/kemistry"
-              target="_blank"
-              class="text-light text-decoration-none"
-              >Source code</a
-            >
-          </li>
-          <li></li>
-          <li></li>
-        </ul>
-      </div>
-      <!-- End: Source code -->
-      <!-- Start: Social Links -->
-      <div
-        class="col-sm-4 col-md-3 text-center text-lg-start d-flex flex-column"
-      >
-        <h3 class="fs-6 fw-bold">Social Links</h3>
-        <ul class="list-unstyled">
-          <li>
-            <a
-              href="https://www.linkedin.com/in/kevin-koech-834189263/"
-              target="_blank"
-              class="social-link"
-            >
-              <i class="devicon-linkedin-plain"></i>
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://twitter.com/kevinkoech357"
-              target="_blank"
-              class="social-link"
-            >
-              <i class="devicon-twitter-original"></i>
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://github.com/kevinkoech357"
-              target="_blank"
-              class="social-link"
-            >
-              <i class="devicon-github-original"></i>
-            </a>
-          </li>
-           <li>
-            <a
-              href="https://kevinkoech.tech"
-              target="_blank"
-              class="social-link"
-            >
-              <i class="devicon-browserstack-plain"></i>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <!-- End: Social links -->
-    </div>
-    <hr />
-    <div
-      class="text-muted d-flex justify-content-between align-items-center pt-3"
-    >
-      <p class="mb-0">Copyright © 2024 Kemistry</p>
-    </div>
-  </div>
-</footer>
-<!-- End: Footer Multi Column -->
-<!-- Load JS -->
-{{ bootstrap.load_js() }}
+    </nav>
 
-</body>
+    <!-- Centered container for flashed messages -->
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <!-- Start: Rendering flashed messages -->
+          {% from 'bootstrap5/utils.html' import render_messages %} {{
+          render_messages(dismissible=true) }}
+          <!-- End: Rendering flashed messages -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Content block for individual pages -->
+    <div class="container-fluid">{% block content %}{% endblock %}</div>
+
+    <!-- Start: Footer Multi Column -->
+    <footer class="bg-dark">
+      <div class="container py-4 py-lg-5">
+        <div class="row justify-content-center">
+          <!-- Start: Section -->
+          <div
+            class="col-sm-4 col-md-3 text-center text-lg-start d-flex flex-column"
+          >
+            <h3 class="fs-6 fw-bold">Section</h3>
+            <ul class="list-unstyled">
+              <li>
+                <a
+                  href="#"
+                  target="_blank"
+                  class="text-light text-decoration-none"
+                  >Home</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  target="_blank"
+                  class="text-light text-decoration-none"
+                  >Playground</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  target="_blank"
+                  class="text-light text-decoration-none"
+                  >Contact</a
+                >
+              </li>
+            </ul>
+          </div>
+          <!-- End: Section -->
+          <!-- Start: Source Code -->
+          <div
+            class="col-sm-4 col-md-3 text-center text-lg-start d-flex flex-column"
+          >
+            <h3 class="fs-6 fw-bold">Code</h3>
+            <ul class="list-unstyled">
+              <li>
+                <a
+                  href="https://github.com/kevinkoech357/kemistry"
+                  target="_blank"
+                  class="text-light text-decoration-none"
+                  >Source code</a
+                >
+              </li>
+              <li></li>
+              <li></li>
+            </ul>
+          </div>
+          <!-- End: Source code -->
+          <!-- Start: Social Links -->
+          <div
+            class="col-sm-4 col-md-3 text-center text-lg-start d-flex flex-column"
+          >
+            <h3 class="fs-6 fw-bold">Social Links</h3>
+            <ul class="list-unstyled">
+              <li>
+                <a
+                  href="https://www.linkedin.com/in/kevin-koech-834189263/"
+                  target="_blank"
+                  class="social-link"
+                >
+                  <i class="devicon-linkedin-plain"></i>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://twitter.com/kevinkoech357"
+                  target="_blank"
+                  class="social-link"
+                >
+                  <i class="devicon-twitter-original"></i>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://github.com/kevinkoech357"
+                  target="_blank"
+                  class="social-link"
+                >
+                  <i class="devicon-github-original"></i>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://kevinkoech.tech"
+                  target="_blank"
+                  class="social-link"
+                >
+                  <i class="devicon-browserstack-plain"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <!-- End: Social links -->
+        </div>
+        <hr />
+        <div
+          class="text-muted d-flex justify-content-between align-items-center pt-3"
+        >
+          <p class="mb-0">Copyright © 2024 Kemistry</p>
+        </div>
+      </div>
+    </footer>
+    <!-- End: Footer Multi Column -->
+
+    <!-- Load JS -->
+    {{ bootstrap.load_js() }}
+
+    <script>
+      // Hide flashed messages after 5 seconds
+      document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+          document.querySelectorAll(".alert").forEach(function (alert) {
+            alert.remove();
+          });
+        }, 7000);
+      });
+    </script>
+  </body>
 </html>

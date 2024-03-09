@@ -1,6 +1,7 @@
 from kemistry import db, admin
 from kemistry.models.basemodel import BaseModel
 from kemistry.super_admin.view_models import PostView
+from kemistry.models.comment import Comment
 
 
 class Post(BaseModel):
@@ -9,6 +10,7 @@ class Post(BaseModel):
 
     Attributes:
         title (str): The title of the post.
+        image_url (str): The url to the image's location on supabase bucket.
         content (str): The main content of the post.
         user_id (str): The ID of the user who authored the post.
         author (User): The user object representing the author of the post.
@@ -18,24 +20,30 @@ class Post(BaseModel):
 
     user_id = db.Column(db.String(10), db.ForeignKey("user.id"), nullable=False)
     title = db.Column(db.String(100), nullable=False, index=True)
+    image_url = db.Column(db.String(150))
     content = db.Column(db.Text, nullable=False)
-    author = db.relationship("User", back_populates="posts")
 
-    def __init__(self, title, content, user_id):
+    # Relationships
+    author = db.relationship("User", back_populates="posts")
+    comments = db.relationship("Comment", back_populates="post")
+
+    def __init__(self, title, image_url, content, user_id):
         """
         Initializes a new Post object.
 
         Args:
             title (str): The title of the post.
+            image_url (str): The url to the image online location.
             content (str): The main content of the post.
             user_id (str): The ID of the user who authored the post.
         """
         super().__init__()
         self.title = title
+        self.image_url = image_url
         self.content = content
         self.user_id = user_id
 
-    def generate_excerpt(self, max_length=75):
+    def generate_excerpt(self, max_length=300):
         """
         Generates an excerpt from the post content.
 
@@ -53,7 +61,7 @@ class Post(BaseModel):
             if excerpt_end == -1:
                 # If there's no space before max_length, truncate at max_length
                 excerpt_end = max_length
-            return self.content[:excerpt_end] + "..."
+            return self.content[:excerpt_end] + " ..."
 
     def __repr__(self):
         """

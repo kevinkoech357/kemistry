@@ -1,5 +1,5 @@
 from flask_security import MailUtil
-from flask_mailman import EmailMultiAlternatives, EmailMessage
+from flask_mailman import EmailMessage
 from threading import Thread
 from flask import current_app
 
@@ -25,11 +25,9 @@ class MyMailUtil(MailUtil):
         Returns:
             Thread: The thread object responsible for sending the email asynchronously.
         """
-        msg = EmailMultiAlternatives(
+        msg = EmailMessage(
             subject=subject, from_email=sender, to=[recipient], body=body
         )
-        if html:
-            msg.attach_alternative(html, "text/html")
 
         thread = Thread(
             target=send_async_email, args=(current_app._get_current_object(), msg)
@@ -45,7 +43,7 @@ def send_async_email(app, msg):
 
     Args:
         app: The Flask application object.
-        msg (EmailMultiAlternatives): The EmailMultiAlternatives object containing email details.
+        msg (EmailMessage): The EmailMessage object containing email details.
 
     Returns:
         None
@@ -54,7 +52,6 @@ def send_async_email(app, msg):
 
     with app.app_context():
         with mail.get_connection() as connection:
-            html = msg.alternatives[0][0] if msg.alternatives else None
             email_message = EmailMessage(
                 subject=msg.subject,
                 body=msg.body,
@@ -62,7 +59,5 @@ def send_async_email(app, msg):
                 to=msg.to,
                 connection=connection,
             )
-            if html:
-                email_message.content_subtype = "html"
-                email_message.attach(html, "text/html")
+
             email_message.send()

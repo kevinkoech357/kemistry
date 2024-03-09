@@ -1,7 +1,7 @@
 from flask_security.forms import RegisterForm
 from wtforms.validators import DataRequired, Regexp, Email
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SubmitField, SelectField
+from wtforms import StringField, TextAreaField, SubmitField, SelectField, FileField
 
 
 class ExtendedRegisterForm(RegisterForm):
@@ -83,3 +83,39 @@ class ContactForm(FlaskForm):
         "Message", validators=[DataRequired(message="Message is required.")]
     )
     submit = SubmitField("Submit")
+
+
+class BlogPostForm(FlaskForm):
+    """
+    Form for creating a new blog post.
+
+    Inherits from Flask-WTF's FlaskForm.
+    Includes fields for content, and an optional picture.
+    """
+
+    title = StringField("Title", validators=[DataRequired(message="Title is required")])
+    content = TextAreaField(
+        "Content", validators=[DataRequired(message="Content is required.")]
+    )
+    picture = FileField("Blog Picture")
+    submit = SubmitField("Publish")
+
+
+class CommentForm(FlaskForm):
+    """
+    Form for users to leave comments under
+    posts if they resonate with the post or have a question
+    or suggestion.
+    """
+
+    name = StringField(
+        "Your Name", validators=[DataRequired(message="Name is required.")]
+    )
+    email = StringField(
+        "Email Address",
+        validators=[DataRequired(message="Valid email is required."), Email()],
+    )
+    message = TextAreaField(
+        "Message", validators=[DataRequired(message="Message is required.")]
+    )
+    comment = SubmitField("Comment")

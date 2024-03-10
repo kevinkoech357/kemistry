@@ -17,7 +17,7 @@ from flask_admin import helpers as admin_helpers
 
 # App modules
 from kemistry.config import App_Config
-from kemistry.email import MyMailUtil
+from kemistry.async_email import MyMailUtil
 
 # Initializing extension objects
 db = SQLAlchemy()
@@ -49,7 +49,7 @@ def create_app():
     from kemistry.super_admin.routes import AnalyticsView
 
     # Import extended register form
-    from kemistry.forms.forms import ExtendedRegisterForm
+    from kemistry.forms.form import ExtendedRegisterForm
 
     app = Flask(__name__)
 
@@ -71,6 +71,7 @@ def create_app():
     mail.init_app(app)
     migrate.init_app(app, db)
     admin.init_app(app)
+    moment.init_app(app)
 
     admin.add_view(AnalyticsView(name="Analytics", endpoint="analytics"))
 
@@ -85,9 +86,11 @@ def create_app():
 
     # Import blueprints
     from kemistry.user.routes import user
+    from kemistry.post.routes import post
 
     # Register blueprints
     app.register_blueprint(user)
+    app.register_blueprint(post)
 
     # one time setup
     with app.app_context():

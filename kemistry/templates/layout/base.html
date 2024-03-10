@@ -21,6 +21,9 @@
       type="text/css"
       href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
     />
+    <!-- Include Flask Moment-->
+    {{ moment.include_moment() }}
+
     <title>Kemistry</title>
     <style>
       /* Apply the Roboto font to the navbar */
@@ -46,6 +49,7 @@
       .social-link:hover {
         text-decoration: underline;
       }
+
     </style>
   </head>
   <body>
@@ -90,9 +94,9 @@
           </ul>
           <form class="d-flex ms-auto" role="search">
             <input
-              class="form-control me-2"
+              class="form-control me-2 bg-dark border border-secondary"
               type="search"
-              placeholder="Search"
+              placeholder="Search ..."
               aria-label="Search"
             />
             <button class="btn btn-outline-light" type="submit">Search</button>
@@ -151,23 +155,21 @@
             <ul class="list-unstyled">
               <li>
                 <a
-                  href="#"
-                  target="_blank"
+                  href="/"
                   class="text-light text-decoration-none"
                   >Home</a
                 >
               </li>
               <li>
                 <a
-                  href="#"
-                  target="_blank"
+                  href="/"
                   class="text-light text-decoration-none"
                   >Playground</a
                 >
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/contact"
                   target="_blank"
                   class="text-light text-decoration-none"
                   >Contact</a

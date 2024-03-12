@@ -1,0 +1,123 @@
+{% extends 'layout/base.html' %} {% block content %}
+
+<style>
+  .custom-card {
+    border: 1px solid #424242;
+    margin: 20px;
+    padding: 40px;
+    border-radius: 20px !important;
+    font-family: "Roboto", sans-serif;
+    font-size: 20px;
+    background-color: transparent;
+    word-spacing: 0.2em;
+  }
+
+  .custom-card h2 {
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 44px;
+  }
+
+  /* Custom styling for the form */
+  #CommentName,
+  #CommentEmail,
+  CommentMessage {
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  .post-content {
+    font-size: 22px;
+    line-height: 1.6;
+  }
+</style>
+<!-- Display Blog content -->
+<section id="BlogPost" class="py-5">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-12">
+        <div class="custom-card rounded">
+          <h2>{{ post.title }}</h2>
+          <div class="text-info mb-3 d-flex justify-content-between">
+            <p>By: {{ post.author.first_name }} {{ post.author.last_name }}</p>
+            <p>{{ moment(post.created_at).format('LLL') }}</p>
+          </div>
+          <div class="post-content">{{ post.content }}</div>
+
+          <!-- End Blog content -->
+
+          <!-- Display Comments -->
+          <div class="mt-5">
+            <h3>Comments:</h3>
+            {% if comments %}
+            <ul class="list-group">
+              {% for comment in comments %}
+              <li class="list-group-item">
+                <h5>{{ loop.index }}. {{ comment.name }}</h5>
+                <p>{{ comment.message }}</p>
+              </li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <p>No comments yet.</p>
+            {% endif %}
+          </div>
+          <!-- End Display Comments -->
+
+          <!-- Comment Form -->
+          <form
+            class="py-5"
+            method="POST"
+            action="{{ url_for('post1.show_post', post_id=post.id) }}"
+          >
+            {{ form.hidden_tag() }}
+            <div class="form-group mb-3">
+              {{ form.name(id="CommentName", class="form-control bg-dark
+              text-light", placeholder="Your Name", required="required") }} {%
+              for error in form.name.errors %}
+              <span style="color: red">{{ error }}</span>
+              {% endfor %}
+            </div>
+            <div class="form-group mb-3">
+              {{ form.email(id="CommentEmail", class="form-control bg-dark
+              text-light", placeholder="Your Email", required="required") }} {%
+              for error in form.name.errors %}
+              <span style="color: red">{{ error }}</span>
+              {% endfor %}
+            </div>
+            <div class="form-group">
+              {{ form.message(id="CommentMessage", class="form-control bg-dark
+              text-light", placeholder="Your Comment", required="required") }}
+              {% for error in form.name.errors %}
+              <span style="color: red">{{ error }}</span>
+              {% endfor %}
+            </div>
+            <button type="submit" id="Form" class="btn btn-primary rounded-pill py-2 mt-3">
+              Add Comment
+            </button>
+          </form>
+          <!-- End Comment Form -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %} {% block scripts %} {{ super() }}
+<script>
+  document
+    .getElementById("BlogPost")
+    .addEventListener("submit", function (event) {
+      var name = document.getElementById("commentName");
+      var email = document.getElementById("commentEmail");
+      var message = document.getElementById("commentMessage");
+
+      // Check if any of the fields are empty
+      if (!name.value || !email.value || !message.value) {
+        alert("Please fill out all fields before submitting.");
+        event.preventDefault(); // Prevent form submission
+      }
+    });
+</script>
+{% endblock %}

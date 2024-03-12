@@ -1,7 +1,9 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
-from kemistry.forms.forms import ContactForm
+from flask import Blueprint, render_template, redirect, url_for, flash, request
+from kemistry.forms.form import ContactForm
+from kemistry.models.post import Post
+from kemistry.models.user import User
 import json
-from datetime import datetime
+
 
 user = Blueprint("user1", __name__)
 
@@ -10,12 +12,18 @@ user = Blueprint("user1", __name__)
 @user.route("/home")
 def home():
     """
-    Render the homepage.
+    Render the homepage with all published blog posts.
 
     Returns:
         A rendered template of the homepage.
     """
-    return render_template("index.html")
+    page = request.args.get("page", 1, type=int)
+
+    posts = Post.query.order_by(Post.created_at.desc()).paginate(page=page, per_page=12)
+
+    total_posts = Post.query.count()
+
+    return render_template("index.html", posts=posts, total_posts=total_posts)
 
 
 @user.route("/contact", methods=["GET", "POST"])
@@ -37,7 +45,6 @@ def contact():
     form = ContactForm()
 
     if form.validate_on_submit():
-        date = datetime.utcnow()
         form_data = {
             "name": form.name.data,
             "email": form.email.data,

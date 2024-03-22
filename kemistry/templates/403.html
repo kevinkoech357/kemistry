@@ -1,10 +1,18 @@
-{% extends "layout/base.html" %}
-
-{% block content %}
-  <div class="container text-center mt-5">
-    <img src="/static/assets/403.jpg" alt="404 Error" class="img-fluid mb-4" style="max-width: 300px;">
-    <h1 class="display-4">Forbidden</h1>
-    <p class="lead">You don't have the permission to access the requested resource. It is either read-protected or not readable by the server.</p>
-    <a href="{{ url_for('user1.home') }}" class="btn btn-primary mb-3">Back Home</a>
-  </div>
+{% extends "layout/base.html" %} {% block content %}
+<div class="container text-center mt-5">
+  <img
+    src="/static/assets/403.jpg"
+    alt="404 Error"
+    class="img-fluid mb-4"
+    style="max-width: 300px"
+  />
+  <h1 class="display-4">Forbidden</h1>
+  <p class="lead">
+    You don't have the permission to access the requested resource. It is either
+    read-protected or not readable by the server.
+  </p>
+  <a href="{{ url_for('user1.home') }}" class="btn btn-primary mb-3"
+    >Back Home</a
+  >
+</div>
 {% endblock content %}

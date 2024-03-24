@@ -3,8 +3,6 @@ from sqlalchemy import func
 from datetime import timezone
 from nanoid import generate as generate_nanoid
 
-ALPHANUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-"
-
 
 class BaseModel(db.Model):
     """
@@ -17,7 +15,7 @@ class BaseModel(db.Model):
         db.String(10),
         primary_key=True,
         index=True,
-        default=generate_nanoid(ALPHANUM, 10),
+        default=generate_nanoid(size=10),
         nullable=False,
     )
     created_at = db.Column(

@@ -84,9 +84,9 @@
   document
     .getElementById("Contact")
     .addEventListener("submit", function (event) {
-      var name = document.getElementById("contactName");
-      var email = document.getElementById("contactEmail");
-      var message = document.getElementById("contactMessage");
+      let name = document.getElementById("contactName");
+      let email = document.getElementById("contactEmail");
+      let message = document.getElementById("contactMessage");
 
       // Check if any of the fields are empty
       if (!name.value || !email.value || !message.value) {

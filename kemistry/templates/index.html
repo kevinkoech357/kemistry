@@ -35,10 +35,9 @@
           <div class="card custom-card bg-dark">
             <div class="card-body">
               <h5 class="card-title text-primary">
-                #{{ (posts.page - 1) * posts.per_page + loop.index }}
+                #{{ (posts.page - 1) * posts.per_page + loop.index }} {{
+                post.title }}
               </h5>
-              {# Displaying card number starting from 1 #}
-              <h5 class="card-title">{{ post.title }}</h5>
               <div class="d-flex justify-content-between">
                 <p class="card-text">
                   <small class="text-info"
@@ -47,9 +46,8 @@
                   >
                 </p>
                 <p class="card-text">
-                  <small class="text-muted"
-                    >{{ moment(post.created_at).format('LLL')
-                    }}</small
+                  <small class="text-info"
+                    >{{ moment(post.created_at).format('LLL') }}</small
                   >
                 </p>
               </div>

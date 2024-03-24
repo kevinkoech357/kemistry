@@ -45,7 +45,6 @@ def create_app():
     # Import user and role models
     from kemistry.models.user import User
     from kemistry.models.role import Role
-    from kemistry.models.post import Post
     from kemistry.super_admin.routes import AnalyticsView
 
     # Import extended register form

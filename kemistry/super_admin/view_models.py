@@ -49,6 +49,16 @@ class PostView(Permission):
     """
 
     can_delete = False
-    column_list = ["id", "title", "content", "created_at", "updated_at"]
-    column_searchable_list = ["title"]
-    form_columns = ["title", "content"]
+    column_list = ["id", "content", "created_at", "updated_at"]
+    form_columns = ["content"]
+
+
+class CommentView(Permission):
+    """
+    Customized Flask-Admin view for the Comments model.
+    """
+
+    can_delete = False
+    column_list = ["id", "post_id", "name", "email", "message"]
+    column_searchable_list = ["name", "email"]
+    form_columns = ["name", "email", "message"]

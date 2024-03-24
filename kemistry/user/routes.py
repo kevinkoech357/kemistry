@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from kemistry.forms.form import ContactForm
 from kemistry.models.post import Post
 from kemistry.models.user import User
+from flask_security import current_user, auth_required, url_for_security
 import json
 
 
@@ -9,7 +10,6 @@ user = Blueprint("user1", __name__)
 
 
 @user.route("/", methods=["GET"])
-@user.route("/home")
 def home():
     """
     Render the homepage with all published blog posts.
@@ -24,6 +24,37 @@ def home():
     total_posts = Post.query.count()
 
     return render_template("index.html", posts=posts, total_posts=total_posts)
+
+
+@user.route("/profile")
+@auth_required()
+def profile():
+    """
+    Render the profile with the current user's
+    profile image, bio, qualifications, and all the posts they have ever written.
+
+    Returns:
+        A rendered template of the profile.
+    """
+    # Retrieve the current user's information
+    # If user is anonymous, request login
+    user = current_user
+
+    if not user:
+        return redirect(url_for_security("login"))
+
+    # Retrieve all posts written by the current user
+    posts = Post.query.filter_by(author=user).all()
+
+    return render_template("profile.html", user=user, posts=posts)
+
+
+@user.route("/settings")
+def settings():
+    """
+    Render the settins page.
+    """
+    return render_template("settings.html")
 
 
 @user.route("/contact", methods=["GET", "POST"])

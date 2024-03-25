@@ -18,6 +18,8 @@ from flask_admin import helpers as admin_helpers
 # App modules
 from kemistry.config import App_Config
 from kemistry.async_email import MyMailUtil
+from kemistry.logger import configure_logging
+
 
 # Initializing extension objects
 db = SQLAlchemy()
@@ -71,6 +73,9 @@ def create_app():
     migrate.init_app(app, db)
     admin.init_app(app)
     moment.init_app(app)
+
+    # Set up logging
+    configure_logging(app)
 
     admin.add_view(AnalyticsView(name="Analytics", endpoint="analytics"))
 

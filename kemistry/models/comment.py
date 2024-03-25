@@ -1,5 +1,7 @@
-from kemistry import db
+from kemistry import db, admin
 from kemistry.models.basemodel import BaseModel
+from kemistry.super_admin.view_models import CommentView
+from hashlib import md5
 
 
 class Comment(BaseModel):
@@ -23,7 +25,7 @@ class Comment(BaseModel):
 
     post = db.relationship("Post", back_populates="comments")
 
-    def __init__(self, name, email, message, post_id):
+    def __init__(self, **kwargs):
         """
         Initializes a new Comment object.
 
@@ -32,11 +34,11 @@ class Comment(BaseModel):
             email (str): Email of the commentor.
             message (str): The comment details.
         """
-        super().__init__()
-        self.name = name
-        self.email = email
-        self.message = message
-        self.post_id = post_id
+        super().__init__(**kwargs)
+        self.name = kwargs.get("name", "")
+        self.email = kwargs.get("email", "")
+        self.message = kwargs.get("message", "")
+        self.post_id = kwargs.get("post_id", "")
 
     def __repr__(self):
         """
@@ -49,3 +51,21 @@ class Comment(BaseModel):
         Returns a human readable representation of Comment object
         """
         return f"{self.name} says {self.message}"
+
+    def avatar(self, size):
+        """
+        Generate a Gravatar image URL for the user's avatar.
+
+        Args:
+            size (int): The size of the avatar image.
+
+        Returns:
+            str: The URL of the Gravatar image.
+
+        """
+        digest = md5(self.email.lower().encode("utf-8")).hexdigest()
+
+        return f"https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}"
+
+
+admin.add_view(CommentView(Comment, db.session))

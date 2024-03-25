@@ -119,3 +119,19 @@ class CommentForm(FlaskForm):
         "Message", validators=[DataRequired(message="Message is required.")]
     )
     comment = SubmitField("Comment")
+
+
+class EditBlogPostForm(FlaskForm):
+    """
+    Form for editing a new blog post.
+
+    Inherits from Flask-WTF's FlaskForm.
+    Includes fields for content, and an optional picture.
+    """
+
+    title = StringField("Title", validators=[DataRequired(message="Title is required")])
+    content = TextAreaField(
+        "Content", validators=[DataRequired(message="Content is required.")]
+    )
+    picture = FileField("Blog Picture")
+    submit = SubmitField("Publish")

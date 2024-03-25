@@ -1,82 +1,195 @@
-{#
-  This template receives different input based on state of tf-setup. In addition
-  to form values the following are available:
-  On GET:
-    choices: Value of SECURITY_TWO_FACTOR_ENABLED_METHODS (with possible addition of 'delete'
-    two_factor_required: Value of SECURITY_TWO_FACTOR_REQUIRED
-    primary_method: if a two-factor method has already been set up.
-  On successful POST:
-    chosen_method: which 2FA method was chosen (e.g. sms, authenticator)
-    choices: Value of SECURITY_TWO_FACTOR_ENABLED_METHODS
+{# This template receives different input based on state of tf-setup. In
+addition to form values the following are available: On GET: choices: Value of
+SECURITY_TWO_FACTOR_ENABLED_METHODS (with possible addition of 'delete'
+two_factor_required: Value of SECURITY_TWO_FACTOR_REQUIRED primary_method: if a
+two-factor method has already been set up. On successful POST: chosen_method:
+which 2FA method was chosen (e.g. sms, authenticator) choices: Value of
+SECURITY_TWO_FACTOR_ENABLED_METHODS If chosen_method == 'authenticator':
+authr_qrcode: the image source for the qrcode authr_key: same key as in qrcode -
+for possible manual entry authr_username: same username as in qrcode
+authr_issuer: same issuer as in qrcode #} {% extends "layout/base.html" %} {%
+from "security/_macros.html" import render_field_with_errors, render_field,
+render_field_no_label, render_field_errors %} {% block content %} {% include
+"security/_messages.html" %}
 
-    If chosen_method == 'authenticator':
-      authr_qrcode: the image source for the qrcode
-      authr_key: same key as in qrcode - for possible manual entry
-      authr_username: same username as in qrcode
-      authr_issuer: same issuer as in qrcode
-#}
-
-{% extends "security/base.html" %}
-{% from "security/_macros.html" import render_field_with_errors, render_field, render_field_no_label, render_field_errors %}
-
-{% block content %}
-  {% include "security/_messages.html" %}
-  <h1>{{ _fsdomain("Two-factor authentication adds an extra layer of security to your account") }}</h1>
-  <h3>{{ _fsdomain("In addition to your username and password, you'll need to use a code.") }}</h3>
-  <form action="{{ url_for_security('two_factor_setup') }}" method="post" name="two_factor_setup_form">
-    {{ two_factor_setup_form.hidden_tag() }}
-    <div class="fs-div">{{ _fsdomain("Currently setup two-factor method: %(method)s", method=primary_method) }}</div>
-    <hr class="fs-gap">
-    {% for subfield in two_factor_setup_form.setup %}
-      {% if subfield.data in choices %}{{ render_field_with_errors(subfield) }}{% endif %}
-    {% endfor %}
-    {{ render_field_errors(two_factor_setup_form.setup) }}
-    {{ render_field(two_factor_setup_form.submit) }}
-    {% if chosen_method=="email" and chosen_method in choices %}
-      <div>{{ _fsdomain("To complete logging in, please enter the code sent to your mail") }}</div>
-    {% endif %}
-    {% if chosen_method=="authenticator" and chosen_method in choices %}
-      <hr>
-      <div class="fs-center">
-        <div>
-          {{ _fsdomain("Open an authenticator app on your device and scan the following QRcode (or enter the code below manually) to start receiving codes:") }}
-        </div>
-        <div>
-          <img alt="{{ _fsdomain('Two factor authentication code') }}" id="qrcode" src="{{ authr_qrcode }}">
-          {# TODO: add width and heigth attrs #}%}
-        </div>
-        <div>{{ authr_key }}</div>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      {% if problem=="email" %}
+      <div class="alert alert-info alert-dismissible fade show" role="alert">
+        {{ _fsdomain("The code for authentication was sent to your email
+        address") }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
       </div>
-    {% endif %}
-    {% if chosen_method=="sms" and chosen_method in choices %}
-      <p>{{ _fsdomain("To Which Phone Number Should We Send Code To?") }}</p>
-      {{ two_factor_setup_form.hidden_tag() }}
-      {{ render_field_with_errors(two_factor_setup_form.phone) }}
-      {{ render_field(two_factor_setup_form.submit) }}
-    {% endif %}
-  </form>
-  {% if security.webauthn and not chosen_method %}
-    <h3>{{ _fsdomain("WebAuthn") }}</h3>
-    <div class="fs-div">
-      {{ _fsdomain("This application supports WebAuthn security keys.") }}
-      <a href="{{ url_for_security('wan_register') }}">{{ _fsdomain("You can set them up here.") }}</a>
+      {% endif %} {% if problem=="help" %}
+      <div class="alert alert-info alert-dismissible fade show" role="alert">
+        {{ _fsdomain("A mail was sent to us in order to reset your application
+        account") }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+      {% endif %}
+
+      <h4 class="mb-3">
+        {{ _fsdomain("Two-factor authentication adds an extra layer of security
+        to your account") }}
+      </h4>
+      <p class="lead">
+        {{ _fsdomain("In addition to your username and password, you'll need to
+        use a code.") }}
+      </p>
+
+      <form
+        action="{{ url_for_security('two_factor_setup') }}"
+        method="post"
+        name="two_factor_setup_form"
+      >
+        {{ two_factor_setup_form.hidden_tag() }}
+
+        <div class="mb-3">
+          <p>
+            {{ _fsdomain("Currently setup two-factor method: %(method)s",
+            method=primary_method) }}
+          </p>
+        </div>
+
+        {% for subfield in two_factor_setup_form.setup %} {% if subfield.data in
+        choices %} {{ render_field_with_errors(subfield,
+        class="form-check-input") }} {% endif %} {% endfor %} {{
+        render_field_errors(two_factor_setup_form.setup) }}
+
+        <button type="submit" class="btn btn-primary">
+          {{ _fsdomain("Submit") }}
+        </button>
+
+        {% if chosen_method=="email" and chosen_method in choices %}
+        <div class="alert alert-info mt-3" role="alert">
+          {{ _fsdomain("To complete logging in, please enter the code sent to
+          your mail") }}
+        </div>
+        {% endif %} {% if chosen_method=="authenticator" and chosen_method in
+        choices %}
+        <hr class="mt-4 mb-3" />
+        <div class="text-center">
+          <p>
+            {{ _fsdomain("Open an authenticator app on your device and scan the
+            following QRcode (or enter the code below manually) to start
+            receiving codes:") }}
+          </p>
+          <img
+            alt="{{ _fsdomain('Two factor authentication code') }}"
+            id="qrcode"
+            src="{{ authr_qrcode }}"
+            class="bg-white mb-3 rounded"
+          />
+          <div>{{ authr_key }}</div>
+        </div>
+        {% endif %} {% if chosen_method=="sms" and chosen_method in choices %}
+        <div class="mt-3">
+          <p>
+            {{ _fsdomain("To Which Phone Number Should We Send Code To?") }}
+          </p>
+          {{ two_factor_setup_form.hidden_tag() }}
+          <div class="mb-3">
+            <input
+              type="tel"
+              class="form-control"
+              id="phone"
+              name="phone"
+              placeholder="{{ _fsdomain('Phone Number') }}"
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            {{ _fsdomain("Submit") }}
+          </button>
+        </div>
+        {% endif %}
+      </form>
+
+      {% if security.webauthn and not chosen_method %}
+      <div class="mt-4">
+        <h3>{{ _fsdomain("WebAuthn") }}</h3>
+        <div class="mb-3">
+          <p>
+            {{ _fsdomain("This application supports WebAuthn security keys.") }}
+          </p>
+          <a
+            href="{{ url_for_security('wan_register') }}"
+            class="btn btn-primary"
+            >{{ _fsdomain("Set up WebAuthn") }}</a
+          >
+        </div>
+      </div>
+      {% endif %} {% if chosen_method %}
+      <div class="mt-4">
+        <hr />
+        <form
+          action="{{ url_for_security('two_factor_token_validation') }}"
+          method="post"
+          name="two_factor_verify_code_form"
+        >
+          {{ two_factor_verify_code_form.hidden_tag() }}
+          <div class="mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="code"
+              name="code"
+              placeholder="{{ _fsdomain('Enter Verification Code') }}"
+            />
+          </div>
+          <button type="submit" class="btn btn-primary mb-3">
+            {{ _fsdomain("Submit") }}
+          </button>
+        </form>
+      </div>
+      {% endif %} {% if security.support_mfa and
+      security.multi_factor_recovery_codes %}
+      <div class="mt-4">
+        <h3>{{ _fsdomain("Recovery Codes") }}</h3>
+        <div class="mb-3">
+          <p>
+            {{ _fsdomain("This application supports setting up recovery codes.")
+            }}
+          </p>
+          <a
+            href="{{ url_for_security('mf_recovery_codes') }}"
+            class="text-primary"
+            >{{ _fsdomain("Set up Recovery Codes") }}</a
+          >
+        </div>
+      </div>
+      {% endif %}
     </div>
-  {% endif %}
-  {% if chosen_method %}
-    {# Hide this when first setting up #}
-    <hr>
-    <form action="{{ url_for_security('two_factor_token_validation') }}" method="post" name="two_factor_verify_code_form">
-      {{ two_factor_verify_code_form.hidden_tag() }}
-      {{ render_field_with_errors(two_factor_verify_code_form.code) }}
-      {{ render_field(two_factor_verify_code_form.submit) }}
-    </form>
-  {% endif %}
-  {% if security.support_mfa and security.multi_factor_recovery_codes %}
-    <h3>{{ _fsdomain("Recovery Codes") }}</h3>
-    <div class="fs-div">
-      {{ _fsdomain("This application supports setting up recovery codes.") }}
-      <a href="{{ url_for_security('mf_recovery_codes') }}">{{ _fsdomain("You can set them up here.") }}</a>
-    </div>
-  {% endif %}
-  {% include "security/_menu.html" %}
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Hide email alert after 3 seconds
+    let emailAlert = document.querySelector("#email-alert");
+    if (emailAlert) {
+      setTimeout(function () {
+        emailAlert.style.display = "none";
+      }, 3000);
+    }
+
+    // Hide help alert after 3 seconds
+    let helpAlert = document.querySelector("#help-alert");
+    if (helpAlert) {
+      setTimeout(function () {
+        helpAlert.style.display = "none";
+      }, 3000);
+    }
+  });
+</script>
 {% endblock content %}

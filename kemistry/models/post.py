@@ -9,7 +9,7 @@ class Post(BaseModel):
     A class to represent a post in the database.
 
     Attributes:
-        title (str): The title of the post.
+        title (str): Blog title
         image_url (str): The url to the image's location on supabase bucket.
         content (str): The main content of the post.
         user_id (str): The ID of the user who authored the post.
@@ -19,7 +19,7 @@ class Post(BaseModel):
     __tablename__ = "post"
 
     user_id = db.Column(db.String(10), db.ForeignKey("user.id"), nullable=False)
-    title = db.Column(db.String(100), nullable=False, index=True)
+    title = db.Column(db.String(255), nullable=False)
     image_url = db.Column(db.String(150))
     content = db.Column(db.Text, nullable=False)
 
@@ -27,12 +27,12 @@ class Post(BaseModel):
     author = db.relationship("User", back_populates="posts")
     comments = db.relationship("Comment", back_populates="post")
 
-    def __init__(self, title, image_url, content, user_id):
+    def __init__(self, title, content, user_id, image_url=None):
         """
         Initializes a new Post object.
 
         Args:
-            title (str): The title of the post.
+            title (str): Blog title
             image_url (str): The url to the image online location.
             content (str): The main content of the post.
             user_id (str): The ID of the user who authored the post.
@@ -43,7 +43,7 @@ class Post(BaseModel):
         self.content = content
         self.user_id = user_id
 
-    def generate_excerpt(self, max_length=300):
+    def generate_excerpt(self, max_length=280):
         """
         Generates an excerpt from the post content.
 

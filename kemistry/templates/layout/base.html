@@ -116,9 +116,11 @@
             <li class="nav-item">
               <a class="nav-link btn btn-dark" href="/write">Write</a>
             </li>
-
             <li class="nav-item">
-              <a class="nav-link btn btn-dark" href="/dashboard">Dashboard</a>
+              <a class="nav-link btn btn-dark" href="/profile">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-dark" href="/settings">Settings</a>
             </li>
             <li class="nav-item">
               <a class="nav-link btn btn-danger" href="/logout">Logout</a>
@@ -260,13 +262,13 @@
     {{ bootstrap.load_js() }}
 
     <script>
-      // Hide flashed messages after 5 seconds
       document.addEventListener("DOMContentLoaded", function () {
+        // Hide flashed messages after 5 seconds
         setTimeout(function () {
           document.querySelectorAll(".alert").forEach(function (alert) {
             alert.remove();
           });
-        }, 7000);
+        }, 5000);
       });
     </script>
   </body>

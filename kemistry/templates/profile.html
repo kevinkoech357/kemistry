@@ -1,0 +1,118 @@
+{% extends 'layout/base.html' %} {% block content %}
+<style>
+  .custom-card {
+    border: 1px solid #9ea2a8;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    cursor: pointer;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .profile-section {
+    display: flex;
+    align-items: center;
+  }
+
+  .profile-details {
+    margin-left: 15px;
+  }
+
+  .profile-details p {
+    margin-bottom: 5px;
+  }
+
+  .profile-details hr {
+    border-top: 1px solid whitesmoke;
+    margin: 10px 0;
+  }
+
+  .vl {
+    border-left: 1px solid whitesmoke;
+    height: 120px;
+    margin-left: 15px;
+  }
+
+</style>
+
+<div class="container py-3">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <!-- User Profile Section -->
+      <div class="card mb-4 custom-card bg-dark">
+        <div class="card-body profile-section">
+          <img
+            src="{{ user.avatar(90)}}"
+            class="img-fluid rounded-circle mb-3"
+            alt="Profile Image"
+          />
+          <div class="vl"></div>
+          <div class="profile-details">
+            <div class="row">
+              <div class="col-md-6">
+                <h4>{{ user.first_name }} {{ user.last_name }}</h4>
+                {% if user.active %}
+                <p class="text-success">Status: Active</p>
+                {% else %}
+                <p class="text-danger">Status: Inactive</p>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <p class="text-info">
+                  {{ user.university }} {{ user.qualification }}
+                </p>
+              </div>
+            </div>
+            <hr />
+            <p>{{ user.bio }}</p>
+          
+          </div>
+          <div class="column">
+            <div class="vl"></div>    
+            <!-- Stats -->
+            <div class="row">
+            </div>
+          </div> 
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Posts Section -->
+  <div class="row justify-content-center post-container">
+    {% for post in posts %}
+    <div class="col-md-4 mb-3">
+      <div class="post-card">
+        <a href="{{ url_for('post1.show_post', post_id=post.id) }}">
+          <div class="card custom-card bg-dark">
+            <div class="card-body">
+              <h5 class="card-title text-primary">
+                #{{ loop.index }} {{ post.title }}
+              </h5>
+              <div class="d-flex justify-content-between">
+                <p class="card-text">
+                  <small class="text-info"
+                    >Author: {{ post.author.first_name }} {{
+                    post.author.last_name }}</small
+                  >
+                </p>
+                <p class="card-text">
+                  <small class="text-info"
+                    >{{ moment(post.created_at).format('LLL') }}</small
+                  >
+                </p>
+              </div>
+              <p class="card-text">{{ post.generate_excerpt() }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

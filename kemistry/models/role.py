@@ -20,7 +20,7 @@ class Role(BaseModel, RoleMixin):
         self,
         name="user",
         description="Read, write, and delete their own posts",
-        permissions=["user-read", "user-write", "delete-own-post"],
+        permissions=["user-read", "user-write", "user-delete", "user-edit"],
     ):
         """
         Constructor for Role class.
@@ -28,7 +28,7 @@ class Role(BaseModel, RoleMixin):
         Parameters:
         - name: Name of the role (default is "user")
         - description: Description of the role (default is "Read, write, and delete their own posts")
-        - permissions: List of permissions associated with the role (default is ["user-read", "user-write", "delete-own-post"])
+        - permissions: List of permissions associated with the role (default is ["user-read", "user-write", "user-delete", "user-edit"])
         """
         super().__init__()
         self.name = name

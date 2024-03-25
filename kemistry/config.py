@@ -1,4 +1,5 @@
 import os
+import json
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -48,7 +49,7 @@ class App_Config:
     SECURITY_REGISTERABLE = True
 
     # Views for redirects
-    SECURITY_POST_LOGIN_VIEW = "/home"
+    SECURITY_POST_LOGIN_VIEW = "/"
     SECURITY_DEFAULT_REMEMBER_ME = True
     SECURITY_POST_CONFIRM_VIEW = "/login"
     SECURITY_CONFIRM_ERROR_VIEW = "/login"
@@ -63,10 +64,6 @@ class App_Config:
     SECURITY_CSRF_IGNORE_UNAUTH_ENDPOINTS = True
     SECURITY_CSRF_COOKIE_NAME = "XSRF-TOKEN"
     WTF_CSRF_CHECK_DEFAULT = False
-
-    # TOTP (Time-based One-Time Password) settings
-    SECURITY_TOTP_SECRETS = {"1": "TjQ9Qa31VOrfEzuPy4VHQWPCTmRzCnFzMKLxXYiZu9B"}
-    SECURITY_TOTP_ISSUER = "kemistry2024"
 
     # User identity attributes for Flask-Security
     # SECURITY_USER_IDENTITY_ATTRIBUTES = ["email"]
@@ -85,3 +82,17 @@ class App_Config:
     # Username Config
     SECURITY_USERNAME_ENABLE = True
     SECURITY_USERNAME_REQUIRED = True
+
+    # 2-FA
+    SECURITY_TWO_FACTOR = True
+    SECURITY_TWO_FACTOR_REQUIRED = True
+    SECURITY_TWO_FACTOR_ENABLED_METHODS = ["authenticator", "email"]
+    SECURITY_TWO_FACTOR_ALWAYS_VALIDATE = False
+    SECURITY_TWO_FACTOR_LOGIN_VALIDITY = "1 week"
+    SECURITY_TWO_FACTOR_RESCUE_EMAIL = True
+    SECURITY_TWO_FACTOR_RESCUE_MAIL = os.environ.get("ADMIN_EMAIL")
+    SECURITY_MULTI_FACTOR_RECOVERY_CODES = False
+
+    # TOTP (Time-based One-Time Password) settings
+    SECURITY_TOTP_SECRETS = json.loads(os.getenv("SECURITY_TOTP_SECRETS", "{}"))
+    SECURITY_TOTP_ISSUER = "Kemistry"

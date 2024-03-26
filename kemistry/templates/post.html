@@ -60,9 +60,6 @@
             <p>By: {{ post.author.first_name }} {{ post.author.last_name }}</p>
             <p>{{ moment(post.created_at).format('LLL') }}</p>
           </div>
-          <div class="post-content">{{ post.content }}</div>
-
-          <!-- End Blog content -->
 
           <!-- Add edit and delete buttons if the user is the author of the post -->
           {% if current_user == post.author %}
@@ -74,13 +71,17 @@
             >
             <form
               action="{{ url_for('post1.delete_post', post_id=post.id) }}"
-              method="post"
+              method="delete"
               style="display: inline-block"
             >
               <button type="submit" class="btn btn-danger">Delete</button>
             </form>
           </div>
           {% endif %}
+
+          <div class="post-content">{{ post.content }}</div>
+
+          <!-- End Blog content -->
 
           <!-- Display Comments -->
           <div class="py-4">
@@ -92,7 +93,7 @@
                 alt="Avatar"
                 class="mr-3 rounded-circle"
               />
-               {{ comment.name }}
+              {{ comment.name }}
 
               <div class="media-body mr-8">
                 <p>{{ comment.message.title() }}</p>

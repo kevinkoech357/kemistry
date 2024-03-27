@@ -51,7 +51,7 @@
           {% else %}
           <!-- Add default image -->
           <img
-            src="/static/assets/blog_image.png"
+            src="/static/assets/blog_image.jpg"
             alt="Kemistry Image"
             class="img-fluid mb-3"
           />
@@ -79,7 +79,7 @@
           </div>
           {% endif %}
 
-          <div class="post-content">{{ post.content }}</div>
+          <div class="py-3 mb-3 post-content">{{ post.content | safe }}</div>
 
           <!-- End Blog content -->
 

@@ -96,3 +96,6 @@ class App_Config:
     # TOTP (Time-based One-Time Password) settings
     SECURITY_TOTP_SECRETS = json.loads(os.getenv("SECURITY_TOTP_SECRETS", "{}"))
     SECURITY_TOTP_ISSUER = "Kemistry"
+
+    # Uploads dir
+    UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER")

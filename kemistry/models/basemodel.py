@@ -1,7 +1,13 @@
 from kemistry import db
 from sqlalchemy import func
-from datetime import timezone
-from nanoid import generate as generate_nanoid
+from uuid import uuid4
+
+
+def generate_uuid():
+    """
+    Generate a unique id using uuid4()
+    """
+    return uuid4().hex
 
 
 class BaseModel(db.Model):
@@ -12,10 +18,11 @@ class BaseModel(db.Model):
     __abstract__ = True
 
     id = db.Column(
-        db.String(10),
+        db.String(32),
         primary_key=True,
+        unique=True,
         index=True,
-        default=generate_nanoid(size=10),
+        default=generate_uuid,
         nullable=False,
     )
     created_at = db.Column(

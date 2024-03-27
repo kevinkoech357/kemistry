@@ -25,7 +25,9 @@ class Post(BaseModel):
 
     # Relationships
     author = db.relationship("User", back_populates="posts")
-    comments = db.relationship("Comment", back_populates="post")
+    comments = db.relationship(
+        "Comment", back_populates="post", cascade="all, delete-orphan"
+    )
 
     def __init__(self, title, content, user_id, image_url=None):
         """

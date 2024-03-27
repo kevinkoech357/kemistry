@@ -3,8 +3,6 @@ from kemistry.models.basemodel import BaseModel
 from kemistry import db, admin
 from kemistry.models.post import Post
 from kemistry.super_admin.view_models import UserView
-from flask_security import AsaList
-from sqlalchemy.ext.mutable import MutableList
 from hashlib import md5
 
 
@@ -36,14 +34,15 @@ class User(BaseModel, UserMixin):
     profile_image = db.Column(db.String(255))
     tf_primary_method = db.Column(db.String(64), nullable=True)
     tf_totp_secret = db.Column(db.String(255), nullable=True)
-    mf_recovery_codes = db.Column(MutableList.as_mutable(AsaList()), nullable=True)
 
     roles = db.relationship(
         "Role", secondary="roles_users", backref=db.backref("users", lazy="dynamic")
     )
 
     # Relationships
-    posts = db.relationship("Post", back_populates="author")
+    posts = db.relationship(
+        "Post", back_populates="author", cascade="all, delete-orphan"
+    )
 
     def __init__(self, **kwargs):
         """
@@ -72,7 +71,6 @@ class User(BaseModel, UserMixin):
         self.profile_image = kwargs.get("profile_image", "")
         self.tf_primary_method = kwargs.get("tf_primary_method", "")
         self.tf_totp_secret = kwargs.get("tf_totp_secret", "")
-        self.mf_recovery_codes = kwargs.get("mf_recovery_codes", "")
 
         if not self.profile_image:
             self.profile_image = self.avatar(128)

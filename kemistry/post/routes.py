@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, abort
 from kemistry.models.post import Post
 from kemistry.models.comment import Comment
 from kemistry.forms.form import BlogPostForm, EditBlogPostForm
@@ -77,22 +77,68 @@ def show_post(post_id):
     return render_template("post.html", post=post, form=form, comments=post.comments)
 
 
-@post.route("/edit/<string:post_id>")
+@post.route("/edit/<string:post_id>", methods=["GET", "POST"])
 @auth_required()
-def edit_post():
+def edit_post(post_id):
     """
     Allow post authors to edit their post title and content.
+
+    Args:
+        post_id (str): The ID of the post to be edited.
+
+    Returns:
+        render_template: Renders the edit_post.html template with the edit form.
+        redirect: Redirects to the home page after successfully editing the post.
     """
+    post_to_edit = Post.query.get_or_404(post_id)
+
+    # If post is not found, abort
+    if not post_to_edit:
+        abort(404)
+
+    # Check if the current user is the author of the post
+    if post_to_edit.author != current_user:
+        abort(403)
+
     form = EditBlogPostForm()
 
-    return render_template("edit_post.html", form=form)
+    if request.method == "POST" and form.validate():
+        post_to_edit.title = form.title.data
+        post_to_edit.content = form.content.data
+        db.session.commit()
+        return redirect(url_for("user1.home"))
+
+    return render_template(
+        "edit_post.html", form=form, post=post_to_edit, content=post_to_edit.content
+    )
 
 
-@post.route("/delete/<string:post_id>")
+@post.route("/delete/<string:post_id>", methods=["GET", "DELETE"])
 @auth_required()
-def delete_post():
+def delete_post(post_id):
     """
-    Allow post authors to delete their post.
-    """
+    Delete a post if the current user is the author.
 
-    return redirect(url_for("/"))
+    Args:
+        post_id (str): The ID of the post to be deleted.
+
+    Returns:
+        redirect: Redirects to the home page after deleting the post.
+    """
+    post_to_delete = Post.query.get(post_id)
+
+    # If post is not found
+    if not post_to_delete:
+        abort(404)
+
+    # Check if the current user is the author of the post
+    if post_to_delete.user_id != current_user.id:
+        abort(403)
+
+    # Delete the post
+    db.session.delete(post_to_delete)
+    db.session.commit()
+
+    flash("Post deleted successfully", "sucess")
+
+    return redirect(url_for("user1.home"))

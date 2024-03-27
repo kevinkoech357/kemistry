@@ -1,0 +1,54 @@
+{% extends 'layout/base.html' %} {% block title %}Edit Post - Kemistry{%
+endblock %} {% block content %}
+
+<style>
+  .custom-card {
+    border: 1px solid #424242;
+    margin: 20px;
+    padding: 40px;
+    border-radius: 20px !important;
+    font-family: "Roboto", sans-serif;
+    font-size: 20px;
+    background-color: transparent;
+    word-spacing: 0.2em;
+  }
+</style>
+
+<div class="container py-3">
+  <div class="row justify-content-center">
+    <div class="col-md-12">
+      <div class="custom-card rounded">
+        <div class="card-body">
+          <form
+            method="post"
+            action="{{ url_for('post1.edit_post', post_id=post.id) }}"
+            enctype="multipart/form-data"
+          >
+            {{ form.hidden_tag() }}
+
+            <div class="form-group mb-3">
+              {{ form.title(value=post.title, class="form-control bg-dark
+              text-white", required=True, placeholder="#Title") }} {% for error
+              in form.title.errors %}
+              <span style="color: red">{{ error }}</span>
+              {% endfor %}
+            </div>
+
+            <div class="form-group mb-3">
+              {{ form.content(value=post.content, rows=30, class="form-control
+              bg-dark text-white", required=True, placeholder="## Content") }} {%
+              for error in form.content.errors %}
+              <span style="color: red">{{ error }}</span>
+              {% endfor %}
+            </div>
+
+            <button type="submit" class="btn btn-success" id="submit-btn">
+              Save Changes
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

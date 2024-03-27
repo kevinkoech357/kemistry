@@ -2,6 +2,18 @@ from flask_security.forms import RegisterForm
 from wtforms.validators import DataRequired, Regexp, Email
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, SelectField, FileField
+from wtforms import ValidationError
+
+
+def validate_min_words(form, field):
+    """
+    Custom validator to check if content has a minimum of 500 words.
+    """
+    min_words = 500
+    content = field.data.strip()
+    words_count = len(content.split())
+    if words_count < min_words:
+        raise ValidationError(f"Content must have at least {min_words} words.")
 
 
 class ExtendedRegisterForm(RegisterForm):
@@ -95,7 +107,8 @@ class BlogPostForm(FlaskForm):
 
     title = StringField("Title", validators=[DataRequired(message="Title is required")])
     content = TextAreaField(
-        "Content", validators=[DataRequired(message="Content is required.")]
+        "Content",
+        validators=[DataRequired(message="Content is required."), validate_min_words],
     )
     picture = FileField("Blog Picture")
     submit = SubmitField("Publish")
@@ -131,7 +144,8 @@ class EditBlogPostForm(FlaskForm):
 
     title = StringField("Title", validators=[DataRequired(message="Title is required")])
     content = TextAreaField(
-        "Content", validators=[DataRequired(message="Content is required.")]
+        "Content",
+        validators=[DataRequired(message="Content is required."), validate_min_words],
     )
     picture = FileField("Blog Picture")
     submit = SubmitField("Publish")

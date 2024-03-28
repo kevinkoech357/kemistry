@@ -21,7 +21,7 @@ class Comment(BaseModel):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     message = db.Column(db.Text, nullable=False)
-    post_id = db.Column(db.String(10), db.ForeignKey("post.id"), nullable=False)
+    post_id = db.Column(db.String(32), db.ForeignKey("post.id"), nullable=False)
 
     post = db.relationship("Post", back_populates="comments")
 

@@ -18,7 +18,7 @@ class Post(BaseModel):
 
     __tablename__ = "post"
 
-    user_id = db.Column(db.String(10), db.ForeignKey("user.id"), nullable=False)
+    user_id = db.Column(db.String(32), db.ForeignKey("user.id"), nullable=False)
     title = db.Column(db.String(255), nullable=False)
     image_url = db.Column(db.String(150))
     content = db.Column(db.Text, nullable=False)
@@ -45,7 +45,7 @@ class Post(BaseModel):
         self.content = content
         self.user_id = user_id
 
-    def generate_excerpt(self, max_length=280):
+    def generate_excerpt(self, max_length=250):
         """
         Generates an excerpt from the post content.
 

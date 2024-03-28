@@ -6,6 +6,7 @@ from flask_security import current_user
 from kemistry import db
 from kemistry.forms.form import CommentForm
 from flask_security import auth_required
+import markdown
 
 post = Blueprint("post1", __name__)
 
@@ -53,6 +54,7 @@ def show_post(post_id):
         A rendered template of the individual post page.
     """
     post = Post.query.get_or_404(post_id)
+    post.content = markdown.markdown(post.content)
     form = CommentForm()
 
     if request.method == "POST" and form.validate_on_submit():
@@ -92,10 +94,6 @@ def edit_post(post_id):
     """
     post_to_edit = Post.query.get_or_404(post_id)
 
-    # If post is not found, abort
-    if not post_to_edit:
-        abort(404)
-
     # Check if the current user is the author of the post
     if post_to_edit.author != current_user:
         abort(403)
@@ -106,6 +104,7 @@ def edit_post(post_id):
         post_to_edit.title = form.title.data
         post_to_edit.content = form.content.data
         db.session.commit()
+        flash("Post edited succesfully", "success")
         return redirect(url_for("user1.home"))
 
     return render_template(
@@ -127,10 +126,6 @@ def delete_post(post_id):
     """
     post_to_delete = Post.query.get(post_id)
 
-    # If post is not found
-    if not post_to_delete:
-        abort(404)
-
     # Check if the current user is the author of the post
     if post_to_delete.user_id != current_user.id:
         abort(403)
@@ -139,6 +134,6 @@ def delete_post(post_id):
     db.session.delete(post_to_delete)
     db.session.commit()
 
-    flash("Post deleted successfully", "sucess")
+    flash("Post deleted successfully", "success")
 
     return redirect(url_for("user1.home"))

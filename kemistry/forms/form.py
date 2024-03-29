@@ -9,7 +9,7 @@ def validate_min_words(form, field):
     """
     Custom validator to check if content has a minimum of 500 words.
     """
-    min_words = 500
+    min_words = 300
     content = field.data.strip()
     words_count = len(content.split())
     if words_count < min_words:
@@ -149,3 +149,40 @@ class EditBlogPostForm(FlaskForm):
     )
     picture = FileField("Blog Picture")
     submit = SubmitField("Publish")
+
+
+class EditProfileForm(FlaskForm):
+    """
+    Form for users to edit their profile details.
+
+    Rendered by /settings route.
+    """
+
+    first_name = StringField("First Name", validators=[DataRequired()])
+    last_name = StringField("Last Name", validators=[DataRequired()])
+    university = StringField("University", validators=[DataRequired()])
+    qualification = SelectField(
+        "Qualification",
+        choices=[
+            ("Diploma", "Diploma"),
+            ("Associates Degree", "Associates Degree"),
+            ("Bachelors Degree", "Bachelors Degree"),
+            ("Postgraduate Diploma", "Postgraduate Diploma"),
+            ("Masters Degree", "Masters Degree"),
+            ("PhD", "PhD"),
+        ],
+        validators=[DataRequired(message="Qualification is required")],
+    )
+    bio = StringField("Bio", validators=[DataRequired()])
+    submit = SubmitField("Save Changes")
+
+
+class RecoverAccountForm(FlaskForm):
+    """
+    Form for recovering a suspended account.
+
+    Inherits from FlaskForm and contains an email field.
+    """
+
+    email = StringField("Email", validators=[Email(), DataRequired()])
+    submit = SubmitField("Recover Account")

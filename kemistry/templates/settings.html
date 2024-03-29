@@ -1,0 +1,100 @@
+{% extends "layout/base.html" %} {% block content %}
+<style>
+  .custom-input {
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    width: 100%;
+  }
+</style>
+
+<!-- Edit Profile Form -->
+<div class="container py-3">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title py-3">Edit Profile</h5>
+        <form method="post" action="{{ url_for('user1.settings') }}">
+          {{ form.hidden_tag() }}
+          <div class="form-group row mb-4">
+            <div class="col-md-6">
+              {{ form.first_name(value=user.first_name, class="form-control
+              text-white bg-dark custom-input", placeholder="First Name") }}
+            </div>
+            <div class="col-md-6">
+              {{ form.last_name(value=user.last_name, class="form-control
+              text-white bg-dark custom-input", placeholder="Last Name") }}
+            </div>
+          </div>
+          <div class="form-group row mb-4">
+            <div class="col-md-6">
+              {{ form.university(value=user.university, class="form-control
+              text-white bg-dark custom-input", placeholder="University") }}
+            </div>
+            <div class="col-md-6">
+              {{ form.qualification(value=user.qualification,
+              class="form-control text-white bg-dark custom-input",
+              placeholder="Qualification") }}
+            </div>
+          </div>
+          <div class="form-group mb-4">
+            {{ form.bio(value=user.bio, class="form-control text-white bg-dark
+            custom-input", placeholder="Bio") }}
+          </div>
+          <button type="submit" class="btn btn-success mt-3">
+            Save Changes
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Danger Zone -->
+<div class="container py-3">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card mb-4 custom-card bg-dark">
+        <div class="card-body">
+          <h5 class="card-title">Danger Zone</h5>
+          <form method="post" id="danger-form">{{ form.hidden_tag() }}</form>
+          <button
+            type="button"
+            class="btn btn-warning mt-3"
+            onclick="confirmAction('suspend')"
+          >
+            Suspend Account
+          </button>
+          <br />
+          <button
+            type="button"
+            class="btn btn-danger mt-3"
+            onclick="confirmAction('delete')"
+          >
+            Delete Account
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function confirmAction(action) {
+    let confirmation = confirm(
+      "Are you sure you want to " + action + " your account?"
+    );
+    if (confirmation) {
+      let form = document.getElementById("danger-form");
+      // Set the appropriate action based on the button clicked
+      if (action === "suspend") {
+        form.action = "{{ url_for('user1.suspend_account') }}";
+      } else if (action === "delete") {
+        form.action = "{{ url_for('user1.delete_account') }}";
+      }
+      form.submit(); // Submit the form with the selected action
+    }
+  }
+</script>
+
+{% endblock content %}

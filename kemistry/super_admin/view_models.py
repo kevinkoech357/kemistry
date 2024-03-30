@@ -1,6 +1,6 @@
 from flask_admin.contrib.sqla import ModelView
 from flask_security import current_user, url_for_security
-from flask import abort, request, redirect, url_for
+from flask import abort, request, redirect
 
 
 class Permission(ModelView):
@@ -36,11 +36,12 @@ class UserView(Permission):
     Customized Flask-Admin view for the User model.
     """
 
-    can_delete = False
-    column_list = ["id", "username", "email", "created_at", "updated_at"]
+    can_delete = True
+    can_create = False
+    can_edit = True
+    column_list = ["id", "username", "email", "created_at"]
     column_searchable_list = ["username", "email"]
     column_filters = ["active"]
-    form_columns = ["username", "email", "password", "active"]
 
 
 class PostView(Permission):
@@ -48,9 +49,10 @@ class PostView(Permission):
     Customized Flask-Admin view for the Post model.
     """
 
-    can_delete = False
-    column_list = ["id", "content", "created_at", "updated_at"]
-    form_columns = ["content"]
+    can_delete = True
+    column_list = ["id", "user_id", "title", "content", "created_at"]
+    column_searchable_list = ["title", "content"]
+    form_columns = ["user_id", "title", "content"]
 
 
 class CommentView(Permission):
@@ -58,7 +60,7 @@ class CommentView(Permission):
     Customized Flask-Admin view for the Comments model.
     """
 
-    can_delete = False
+    can_delete = True
     column_list = ["id", "post_id", "name", "email", "message"]
     column_searchable_list = ["name", "email"]
-    form_columns = ["name", "email", "message"]
+    form_columns = ["post_id", "name", "email", "message"]

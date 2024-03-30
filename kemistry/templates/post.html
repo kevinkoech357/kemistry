@@ -88,20 +88,17 @@
             <h3>Comments:</h3>
             {% if comments %} {% for comment in comments %}
             <div class="media mb-4">
-              <img
-                src="{{ comment.avatar(48) }}"
-                alt="Avatar"
-                class="mr-3 rounded-circle"
-              />
-              {{ comment.name }}
-
-              <div class="media-body mr-8">
-                <p>{{ comment.message.title() }}</p>
+              <div class="media-body">
+                <h5 class="mt-0 text-muted">
+                  {{ comment.name }} on {{
+                  moment(comment.created_at).format('LLL') }} said:
+                </h5>
+                <p class="text-secondary">{{ comment.message }}</p>
               </div>
             </div>
-            {% endfor %} {% else %}
+            {% else %}
             <p>No comments yet.</p>
-            {% endif %}
+            {% endfor %} {% endif %}
           </div>
           <!-- End Display Comments -->
 

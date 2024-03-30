@@ -106,7 +106,7 @@
                   >
                 </p>
               </div>
-              <p class="card-text">{{ post.generate_excerpt() }}</p>
+              <p class="card-text">{{ post.generate_excerpt() | safe }}</p>
             </div>
           </div>
         </a>

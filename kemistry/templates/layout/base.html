@@ -112,7 +112,7 @@
           </form>
           <ul class="navbar-nav ms-auto mb-2">
             {% if current_user.is_authenticated %}
-            <!-- If user is authenticated, show logout -->
+            <!-- If user is authenticated, show links for authenticated users -->
             <li class="nav-item">
               <a class="nav-link btn btn-dark" href="/write">Write</a>
             </li>
@@ -122,9 +122,16 @@
             <li class="nav-item">
               <a class="nav-link btn btn-dark" href="/settings">Settings</a>
             </li>
+            <!-- Check if the user has admin role -->
+            {% if 'admin' in current_user.roles %}
+            <li class="nav-item">
+              <a class="nav-link btn btn-success" href="/admin">Admin Page</a>
+            </li>
+            {% endif %}
             <li class="nav-item">
               <a class="nav-link btn btn-danger" href="/logout">Logout</a>
             </li>
+
             {% else %}
             <!-- If user is not authenticated, show login and sign up -->
             <li class="nav-item">

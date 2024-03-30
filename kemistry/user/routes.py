@@ -5,6 +5,7 @@ from kemistry.models.user import User
 from flask_security import current_user, auth_required, url_for_security, logout_user
 import json
 from kemistry import db
+import markdown
 
 
 user = Blueprint("user1", __name__)
@@ -45,7 +46,11 @@ def profile():
         return redirect(url_for_security("login"))
 
     # Retrieve all posts written by the current user
-    posts = Post.query.filter_by(author=user).all()
+    posts = Post.query.filter_by(author=user).order_by(Post.created_at.desc()).all()
+
+    # Process Markdown content for each post
+    for post in posts:
+        post.content = markdown.markdown(post.content)
 
     return render_template("profile.html", user=user, posts=posts)
 

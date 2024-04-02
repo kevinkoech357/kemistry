@@ -21,7 +21,7 @@ def home():
     """
     page = request.args.get("page", 1, type=int)
 
-    posts = Post.query.order_by(Post.created_at.desc()).paginate(page=page, per_page=12)
+    posts = Post.query.order_by(Post.created_at.desc()).paginate(page=page, per_page=6)
 
     total_posts = Post.query.count()
 

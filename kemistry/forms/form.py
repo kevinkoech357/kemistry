@@ -108,9 +108,18 @@ class BlogPostForm(FlaskForm):
     title = StringField("Title", validators=[DataRequired(message="Title is required")])
     content = TextAreaField(
         "Content",
-        validators=[DataRequired(message="Content is required."), validate_min_words],
+        validators=[DataRequired(message="Content is required.")],
     )
-    picture = FileField("Blog Picture")
+    tag_choices = [
+        ("organic", "Organic Chemistry"),
+        ("physical", "Physical Chemistry"),
+        ("inorganic", "Inorganic Chemistry"),
+        ("general", "General Chemistry"),
+        ("medicinal", "Medicinal Chemistry"),
+    ]
+    tag = SelectField(
+        "Tag", choices=tag_choices, validators=[DataRequired(message="Tag is required")]
+    )
     submit = SubmitField("Publish")
 
 

@@ -30,7 +30,10 @@ def write():
         # If the form is submitted and passes validation
         # Create a new Post object and save it to the database
         new_post = Post(
-            title=form.title.data, content=form.content.data, user_id=current_user.id
+            title=form.title.data,
+            content=form.content.data,
+            tag=form.tag.data,
+            user_id=current_user.id,
         )
 
         db.session.add(new_post)
@@ -74,7 +77,7 @@ def show_post(post_id):
 
         # Flash sucess message and refresh page
         flash("Your comment has been submitted successfully!", "success")
-        return redirect(url_for("post1.show_post", post_id=post_id))
+        return redirect(url_for("show_post", post_id=post_id))
 
     return render_template("post.html", post=post, form=form, comments=post.comments)
 
@@ -105,7 +108,10 @@ def edit_post(post_id):
         post_to_edit.content = form.content.data
         db.session.commit()
         flash("Post edited succesfully", "success")
-        return redirect(url_for("user1.home"))
+        return redirect(url_for("post1.show_post", post_id=post_to_edit.id))
+    elif request.method == "GET":
+        form.title.data = post_to_edit.title
+        form.content.data = post_to_edit.content
 
     return render_template(
         "edit_post.html", form=form, post=post_to_edit, content=post_to_edit.content

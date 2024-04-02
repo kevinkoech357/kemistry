@@ -10,18 +10,18 @@ class Post(BaseModel):
 
     Attributes:
         title (str): Blog title
-        image_url (str): The url to the image's location on supabase bucket.
         content (str): The main content of the post.
         user_id (str): The ID of the user who authored the post.
         author (User): The user object representing the author of the post.
+        tag (str): The tag associated with the post
     """
 
     __tablename__ = "post"
 
     user_id = db.Column(db.String(32), db.ForeignKey("user.id"), nullable=False)
     title = db.Column(db.String(255), nullable=False)
-    image_url = db.Column(db.String(150))
     content = db.Column(db.Text, nullable=False)
+    tag = db.Column(db.String(255), nullable=False)
 
     # Relationships
     author = db.relationship("User", back_populates="posts")
@@ -29,21 +29,21 @@ class Post(BaseModel):
         "Comment", back_populates="post", cascade="all, delete-orphan"
     )
 
-    def __init__(self, title, content, user_id, image_url=None):
+    def __init__(self, title, content, user_id, tag):
         """
         Initializes a new Post object.
 
         Args:
             title (str): Blog title
-            image_url (str): The url to the image online location.
             content (str): The main content of the post.
             user_id (str): The ID of the user who authored the post.
+            tag (str): The tag associated with the post
         """
         super().__init__()
         self.title = title
-        self.image_url = image_url
         self.content = content
         self.user_id = user_id
+        self.tag = tag
 
     def generate_excerpt(self, max_length=250):
         """

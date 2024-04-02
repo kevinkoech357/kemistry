@@ -102,13 +102,19 @@ def create_app():
         print("Created db successfully")
         # Create user role
         app.security.datastore.find_or_create_role(
-            name="user", permissions={"user-read", "user-write"}
+            name="user",
+            permissions={"user-read", "user-write", "user-edit", "user-delete"},
         )
         db.session.commit()
         # Create admin role
         app.security.datastore.find_or_create_role(
             name="admin",
-            permissions={"admin-read", "admin-write", "user-read", "user-write"},
+            permissions={
+                "admin-read",
+                "admin-write",
+                "admin-edit",
+                "admin-delete",
+            },
         )
         db.session.commit()
 

@@ -108,7 +108,12 @@
               placeholder="Search ..."
               aria-label="Search"
             />
-            <button class="btn btn-outline-light" type="submit">Search</button>
+            <a
+              class="btn btn-outline-light"
+              type="submit"
+              href="{{ url_for('search1.search')}}"
+              >Search</a
+            >
           </form>
           <ul class="navbar-nav ms-auto mb-2">
             {% if current_user.is_authenticated %}

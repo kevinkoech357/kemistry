@@ -77,7 +77,7 @@ def show_post(post_id):
 
         # Flash sucess message and refresh page
         flash("Your comment has been submitted successfully!", "success")
-        return redirect(url_for("show_post", post_id=post_id))
+        return redirect(url_for("post1.show_post", post_id=post_id))
 
     return render_template("post.html", post=post, form=form, comments=post.comments)
 

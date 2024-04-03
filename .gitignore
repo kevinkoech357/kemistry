@@ -7,3 +7,5 @@ contact.json
 .vscode/
 kemistry.log
 uploads/
+access.log
+error.log

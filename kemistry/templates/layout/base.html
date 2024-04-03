@@ -101,20 +101,22 @@
               <a class="nav-link" href="/contact">Contact</a>
             </li>
           </ul>
-          <form class="d-flex ms-auto" role="search">
+          <form
+            class="d-flex ms-auto"
+            role="search"
+            action="{{ url_for('search1.search')}}"
+            method="GET"
+          >
             <input
               class="form-control me-2 bg-dark border border-secondary text-light"
               type="search"
               placeholder="Search ..."
               aria-label="Search"
+              name="query"
             />
-            <a
-              class="btn btn-outline-light"
-              type="submit"
-              href="{{ url_for('search1.search')}}"
-              >Search</a
-            >
+            <button class="btn btn-outline-light" type="submit">Search</button>
           </form>
+
           <ul class="navbar-nav ms-auto mb-2">
             {% if current_user.is_authenticated %}
             <!-- If user is authenticated, show links for authenticated users -->

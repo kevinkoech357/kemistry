@@ -91,10 +91,12 @@ def create_app():
     # Import blueprints
     from kemistry.user.routes import user
     from kemistry.post.routes import post
+    from kemistry.search.routes import search_bp
 
     # Register blueprints
     app.register_blueprint(user)
     app.register_blueprint(post)
+    app.register_blueprint(search_bp)
 
     # one time setup
     with app.app_context():

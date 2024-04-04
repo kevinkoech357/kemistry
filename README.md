@@ -3,7 +3,7 @@
 ![blog_image](https://github.com/kevinkoech357/kemistry/assets/102515005/7ce9b8c6-310f-481d-806a-3616a00fd816)
 
 
-Kemistry is a full-stack blog web app designed exclusively for chemists, including professionals, students, and enthusiasts alike. Users can create posts covering various branches of chemistry, such as organic, physical, inorganic, medicinal, or general chemistry. Additionally, users have the ability to comment on posts. The app comes with 2-Factor Authorization enabled by default.
+Kemistry is a full-stack blog web app designed exclusively for chemists, including professionals, students, and enthusiasts alike. Users can create posts covering various branches of chemistry, such as organic, physical, inorganic, medicinal, or general chemistry. Additionally, users have the ability to comment on posts. The app comes with 2-Factor Authentication, either by email or authenticator app, enabled by default.
 
 
 ## Table of Contents

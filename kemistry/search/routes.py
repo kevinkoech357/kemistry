@@ -4,7 +4,6 @@ from kemistry.models.user import User
 from kemistry.models.post import Post
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import desc
-import markdown
 
 search_bp = Blueprint("search1", __name__)
 
@@ -26,9 +25,6 @@ def search():
             .all()
         )
 
-        for tag_post in tag_posts:
-            tag_post.content = markdown.markdown(tag_post.content)
-
         # Search for posts by author name
         author_posts = (
             Post.query.join(User)
@@ -40,9 +36,6 @@ def search():
             .order_by(desc(Post.created_at))
             .all()
         )
-
-        for author_post in author_posts:
-            author_post.content = markdown.markdown(author_post.content)
 
         # Combine the results
         search_results = tag_posts + author_posts

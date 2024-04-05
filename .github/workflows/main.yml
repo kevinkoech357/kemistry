@@ -29,26 +29,6 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker push kevinkoech357/kemistry:latest
 
-    - name: Docker Login
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        
-    - name: Push Docker Image
-      run: docker push kevinkoech357/kemistry:latest
-
-    - name: SSH into Server and Deploy
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          docker stop kemistry_container || true
-          docker rm kemistry_container || true
-          docker run -d -p 8007:8007 --name kemistry_container kevinkoech357/kemistry:latest
-
     - name: Restart Nginx
       run: |
         expect -c '

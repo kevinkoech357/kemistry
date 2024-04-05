@@ -26,6 +26,8 @@ jobs:
           git pull origin main
           docker build -t kemistry .
           docker tag kemistry:latest kevinkoech357/kemistry:latest
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker push kevinkoech357/kemistry:latest
 
     - name: Docker Login
       uses: docker/login-action@v2

@@ -96,3 +96,7 @@ This will run the Kemistry app inside a Docker container.
 Once the app is running, you can access it by navigating to ```http://localhost:8000``` 0r ```http://localhost:8007``` in your web browser. From there, you can create posts on various branches of chemistry and engage with other users through comments. 
 
 Enjoy using Kemistry!
+
+PS: DB Schema
+![Screenshot from 2024-04-05 10-39-39](https://github.com/kevinkoech357/kemistry/assets/102515005/ef2f3e90-99b1-495a-9f0a-c1b946970ea0)
+

@@ -22,8 +22,8 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd ${{ secrets.WORK_DIR }}
-          git pull origin main
+          cd ${{ secrets.WORK_DIR }}/kemistry
+          git pull origin main || { echo "Failed to pull changes"; exit 1; }
           docker build -t kemistry .
           docker tag kemistry kevinkoech357/kemistry
 
@@ -34,7 +34,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         
     - name: Push Docker Image
-      run: docker push kevinkoech357/kemistry
+      run: docker push kevinkoech357/kemistry || { echo "Failed to push Docker image"; exit 1; }
 
     - name: SSH into Server and Deploy
       uses: appleboy/ssh-action@master
@@ -43,19 +43,14 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          docker pull kevinkoech357/kemistry
+          docker pull kevinkoech357/kemistry || { echo "Failed to pull Docker image"; exit 1; }
           docker stop kemistry_container || true
           docker rm kemistry_container || true
-          docker run -d -p 8007:8007 --name kemistry_container kevinkoech357/kemistry
+          docker run -d -p 8007:8007 --name kemistry_container kevinkoech357/kemistry || { echo "Failed to run Docker container"; exit 1; }
 
     - name: Restart Nginx
       run: |
-        expect -c '
-        spawn ssh $env(SSH_USER)@$env(SSH_HOST) "sudo service nginx restart"
-        expect "password:"
-        send "${{ secrets.SSH_PASSWORD }}\r"
-        expect eof
-        '
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "sudo service nginx restart" || { echo "Failed to restart Nginx"; exit 1; }
 
     - name: Cleanup
-      run: rm -f ~/.ssh/id_rsa ~/.ssh/known_hosts
+      run: rm -f ~/.ssh/id_rsa ~/.ssh/known_hosts || { echo "Failed to cleanup SSH keys"; exit 1; }

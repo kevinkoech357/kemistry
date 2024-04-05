@@ -45,7 +45,6 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          docker pull kevinkoech357/kemistry
           docker stop kemistry_container || true
           docker rm kemistry_container || true
           docker run -d -p 8007:8007 --name kemistry_container kevinkoech357/kemistry:latest

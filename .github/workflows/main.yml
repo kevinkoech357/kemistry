@@ -29,14 +29,5 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker push kevinkoech357/kemistry:latest
 
-    - name: Restart Nginx
-      run: |
-        expect -c '
-        spawn ssh $env(SSH_USER)@$env(SSH_HOST) "sudo service nginx restart"
-        expect "password:"
-        send "${{ secrets.SSH_PASSWORD }}\r"
-        expect eof
-        '
-
     - name: Cleanup
       run: rm -f ~/.ssh/id_rsa ~/.ssh/known_hosts

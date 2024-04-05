@@ -20,7 +20,7 @@ jobs:
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
-        password: ${{ secrets.SSH_PASSWORD }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd ${{ secrets.WORK_DIR }}
           git pull origin main
@@ -41,7 +41,7 @@ jobs:
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
-        password: ${{ secrets.SSH_PASSWORD }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           docker pull kevinkoech357/kemistry
           docker stop kemistry_container || true
@@ -51,7 +51,7 @@ jobs:
     - name: Restart Nginx
       run: |
         expect -c '
-        spawn ssh $env(SSh_USER)@$env(SSh_HOST) "sudo service nginx restart"
+        spawn ssh $env(SSH_USER)@$env(SSH_HOST) "sudo service nginx restart"
         expect "password:"
         send "${{ secrets.SSH_PASSWORD }}\r"
         expect eof

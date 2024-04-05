@@ -1,30 +1,32 @@
+name: Docker Build and Deploy
+
 on:
   push:
     branches:
       - main
   workflow_dispatch:
-  
+
 jobs:
-  run_pull:
-    name: run pull
+  build_and_deploy:
+    name: Build and Deploy
     runs-on: ubuntu-latest
     
     steps:
-    - name: install ssh keys
-      run: |
-        install -m 600 -D /dev/null ~/.ssh/id_rsa
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-    - name: connect and pull
-      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull"
-    - name: Build Docker Image
-      run: |
-        docker build -t kemistry .
-        
-    - name: Tag Docker Image
-      run: |
-        docker tag kemistry kevinkoech357/kemistry
-        
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: SSH into Server, Pull Changes, and Build Docker Image
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        script: |
+          cd ${{ secrets.WORK_DIR }}
+          git pull origin main
+          docker build -t kemistry .
+          docker tag kemistry kevinkoech357/kemistry
+
     - name: Docker Login
       uses: docker/login-action@v2
       with:
@@ -32,13 +34,20 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         
     - name: Push Docker Image
-      run: |
-        docker push kevinkoech357/kemistry
+      run: docker push kevinkoech357/kemistry
 
-    - name: Run Docker Container
-      run: |
-        docker run -d -p 8007:8007 --name kemistry_container kevinkoech357/kemistry
-        
+    - name: SSH into Server and Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        script: |
+          docker pull kevinkoech357/kemistry
+          docker stop kemistry_container || true
+          docker rm kemistry_container || true
+          docker run -d -p 8007:8007 --name kemistry_container kevinkoech357/kemistry
+
     - name: Restart Nginx
       run: |
         expect -c '

@@ -10,14 +10,46 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: install ssh keys
-      # check this thread to understand why its needed:
-      # https://stackoverflow.com/a/70447517
-      run: |
-        install -m 600 -D /dev/null ~/.ssh/id_rsa
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+    - name: Install sshpass
+      run: sudo apt-get update && sudo apt-get install -y sshpass
+
+    - name: Install Expect
+      run: sudo apt-get install -y expect
+      
     - name: connect and pull
-      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit"
-    - name: cleanup
+      run: |
+        sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull"
+
+    - name: Build Docker Image
+      run: |
+        docker build -t kemistry .
+        
+    - name: Tag Docker Image
+      run: |
+        docker tag kemistry kevinkoech357/kemistry
+        
+    - name: Docker Login
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        
+    - name: Push Docker Image
+      run: |
+        docker push kevinkoech357/kemistry
+
+    - name: Run Docker Container
+      run: |
+        docker run -d -p 8007:8007 --name kemistry_container kevinkoech357/kemistry
+        
+    - name: Restart Nginx
+      run: |
+        expect -c '
+        spawn ssh $env(SSh_USER)@$env(SSh_HOST) "sudo service nginx restart"
+        expect "password:"
+        send "${{ secrets.SSH_PASSWORD }}\r"
+        expect eof
+        '
+
+    - name: Cleanup
       run: rm -f ~/.ssh/id_rsa ~/.ssh/known_hosts

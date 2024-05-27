@@ -11,7 +11,7 @@ worker_connections = 1000
 max_request_size = 31457280
 
 # Server Socket
-bind = "0.0.0.0:8007"
+bind = "0.0.0.0:8005"
 backlog = 2048
 
 # Worker Processes

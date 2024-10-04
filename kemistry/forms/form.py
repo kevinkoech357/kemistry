@@ -108,7 +108,7 @@ class BlogPostForm(FlaskForm):
     title = StringField("Title", validators=[DataRequired(message="Title is required")])
     content = TextAreaField(
         "Content",
-        validators=[DataRequired(message="Content is required.")],
+        validators=[DataRequired(message="Content is required."), validate_min_words],
     )
     tag_choices = [
         ("organic", "Organic Chemistry"),

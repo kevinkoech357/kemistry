@@ -76,7 +76,7 @@ cachelib==0.12.0
 certifi==2024.7.4
 cffi==1.16.0
 click==8.1.7
-cryptography==42.0.5
+cryptography==43.0.1
 deprecation==2.1.0
 dnspython==2.6.1
 email-validator==2.1.0.post1
@@ -144,7 +144,7 @@ cachelib==0.12.0
 certifi==2024.7.4
 cffi==1.16.0
 click==8.1.7
-cryptography==42.0.5
+cryptography==43.0.1
 deprecation==2.1.0
 dnspython==2.6.1
 email-validator==2.1.0.post1
@@ -214,7 +214,7 @@ cachelib==0.12.0
 certifi==2024.7.4
 cffi==1.16.0
 click==8.1.7
-cryptography==42.0.5
+cryptography==43.0.1
 deprecation==2.1.0
 dnspython==2.6.1
 email-validator==2.1.0.post1

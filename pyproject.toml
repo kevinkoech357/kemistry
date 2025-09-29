@@ -1,0 +1,7 @@
+[project]
+name = "kemistry"
+version = "0.1.0"
+description = "A blog web app built for chemists. Has a Jenkins pipeline configured that has OWASP and Sonar Scans for DevSecOps best practices. Also includes 2-Factor Authentication for enhanced security."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
